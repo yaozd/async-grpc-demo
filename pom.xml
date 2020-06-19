@@ -18,6 +18,7 @@
 		<protobuf.version>3.5.1</protobuf.version>
 		<protoc.version>3.5.1-1</protoc.version>
 		<jaeger.version>0.30.0</jaeger.version>
+		<logback.version>1.2.3</logback.version>
 	</properties>
 
 	<dependencies>
@@ -57,6 +58,17 @@
 			<groupId>io.opentracing.contrib</groupId>
 			<artifactId>grpc-opentracing</artifactId>
 			<version>0.2.0</version>
+		</dependency>
+		<!-- log -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
 		</dependency>
 		<!-- Unit Testing -->
 		<dependency>
