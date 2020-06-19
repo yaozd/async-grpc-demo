@@ -5,7 +5,8 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.yzd.demo.IdCache;
 import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
+import io.grpc.netty.NettyChannelBuilder;
+import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.internal.StringUtil;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -28,7 +29,7 @@ public class GrpcClientTest {
     private static CountDownLatch downLatch;
     private final static Logger logger = Logger.getLogger(GrpcClient.class.getCanonicalName());
     private static HelloGrpc.HelloFutureStub stub;
-    private final static int iterations = 500;
+    private final static int iterations = 20000;
     private static ArrayList<IsoProcessor.BenchmarkMessage> requestList = new ArrayList<>();
     // id 判重使用,避免相同任务重复执行
     private final static Map<String, String> idMap = new ConcurrentHashMap<>();
@@ -36,7 +37,9 @@ public class GrpcClientTest {
 
     @BeforeClass
     public static void begin() {
-        final ManagedChannel channel = ManagedChannelBuilder.forTarget("localhost:8181")
+        final ManagedChannel channel = NettyChannelBuilder.forTarget("localhost:8181")
+                .eventLoopGroup(new NioEventLoopGroup(1))
+                .directExecutor()
                 //.executor(newThreadPoolExecutor())
                 .disableRetry()
                 .keepAliveTimeout(1, TimeUnit.SECONDS)
