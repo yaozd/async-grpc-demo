@@ -3,6 +3,7 @@ package org.nuhara.demos;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.yzd.demo.IdCache;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.netty.util.internal.StringUtil;
@@ -54,6 +55,7 @@ public class GrpcClientTest {
     public static void end() throws InterruptedException {
         logger.info("Test complete!");
         downLatch.await();
+        logger.info("ID_CACHE_SIZE: " + IdCache.getInstance().localCacheSize());
         logger.info("ID_MAP_SIZE: " + idMap.size());
     }
 
@@ -67,6 +69,19 @@ public class GrpcClientTest {
         }
     }
 
+    @Test
+    public void multiClientTest() {
+        int nThreads = 20;
+        ExecutorService executorService = Executors.newFixedThreadPool(nThreads);
+        for (int i = 0; i < nThreads; i++) {
+            executorService.submit(() -> {
+                for (IsoProcessor.BenchmarkMessage benchmarkMessage : requestList) {
+                    call(benchmarkMessage);
+                }
+            });
+        }
+    }
+
     private void call(IsoProcessor.BenchmarkMessage message) {
         String idStr = String.valueOf(message.getField100());
         if (StringUtil.isNullOrEmpty(idStr)) {
@@ -74,6 +89,7 @@ public class GrpcClientTest {
         }
         //-添加与判重
         if (idMap.putIfAbsent(idStr, EMPTY) != null) {
+            logger.warning("putIfAbsent");
             return;
         }
         ListenableFuture<IsoProcessor.BenchmarkMessage> response = stub.say(message);
@@ -83,6 +99,7 @@ public class GrpcClientTest {
                 removeById(idStr);
                 Assert.assertTrue(message.getField100() == result.getField100());
                 logger.info("Call_Complete: " + result.getField100());
+                IdCache.getInstance().put(idStr, "true");
                 finish();
             }
 
