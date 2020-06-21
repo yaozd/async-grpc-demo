@@ -5,6 +5,9 @@ import com.mattie.grpc.HelloWorldProtos;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
+/**
+ * 同步模式
+ */
 public class BlockClient {
     public static void main(String[] args) {
         //使用usePlaintext，否则使用加密连接

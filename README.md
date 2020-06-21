@@ -34,6 +34,8 @@ gRPC主要有4种请求／响应模式，分别是：
 ## 双向流模式
 - [gRPC入门-双向流式通信](https://www.jianshu.com/p/323806eb91bb)
 
+## grpc-服务发现
+- [java grpc client集成consul服务发现](https://www.jianshu.com/p/997505834bf5)
 
 ## running the application
 
