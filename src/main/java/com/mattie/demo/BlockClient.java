@@ -15,8 +15,13 @@ public class BlockClient {
                 .forAddress("localhost", 8899).usePlaintext();
         ManagedChannel channel = channelBuilder.build();
         GreeterGrpc.GreeterBlockingStub blockingStub = GreeterGrpc.newBlockingStub(channel);
-        HelloWorldProtos.HelloReply helloReply = blockingStub.
-                sayHello(HelloWorldProtos.HelloRequest.newBuilder().setMessage("hello wolrd").build());
-        System.out.println(helloReply.getMessage());
+        for (int i = 0; i < 10000; i++) {
+            HelloWorldProtos.HelloReply helloReply = blockingStub.
+                    sayHello(HelloWorldProtos.HelloRequest.newBuilder().setMessage("hello wolrd").build());
+            System.out.println(helloReply.getMessage());
+        }
+        //System.out.println("channel shutdown");
+        //模拟：远程主机强迫关闭了一个现有的连接
+        //channel.shutdownNow();
     }
 }

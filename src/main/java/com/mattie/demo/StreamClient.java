@@ -35,11 +35,14 @@ public class StreamClient {
         requestObserver.onNext(HelloWorldProtos.HelloStreamRequest.newBuilder().setRequestInfo("hello server2").build());
         requestObserver.onNext(HelloWorldProtos.HelloStreamRequest.newBuilder().setRequestInfo("hello server3").build());
         requestObserver.onNext(HelloWorldProtos.HelloStreamRequest.newBuilder().setRequestInfo("hello server4").build());
-        //requestObserver.onCompleted();
+        requestObserver.onCompleted();
         try {
             Thread.sleep(1000*20);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        //System.out.println("channel shutdown");
+        //模拟：远程主机强迫关闭了一个现有的连接
+        //channel.shutdownNow();
     }
 }
