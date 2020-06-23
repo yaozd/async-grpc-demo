@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.netty.NettyServerBuilder;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.ServerTracingInterceptor;
 
@@ -16,7 +17,8 @@ public class GrpcServer {
 	public static void main(String[] args) throws IOException, InterruptedException {
 		
 //		ServerTracingInterceptor tracingInterceptor = new ServerTracingInterceptor(tracer);
-		
+		//maxConcurrentCallsPerConnection控制并发数 streamId
+		//NettyServerBuilder.forPort(8081).maxConcurrentCallsPerConnection(1);
 		Server server = ServerBuilder.forPort(8181)
 //				.addService(tracingInterceptor.intercept(new ISOProcessorImpl()))
 				.addService(new ISOProcessorImpl())
