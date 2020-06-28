@@ -10,8 +10,14 @@ import java.util.function.BiConsumer;
 import static com.mattie.grpc.HelloWorldProtos.*;
 
 public class MyService extends GreeterImplBase {
+    /**
+     * 可以测试大请求数据包，如：4M
+     * @param request
+     * @param responseObserver
+     */
     @Override
     public void sayHello(HelloRequest request, StreamObserver<HelloReply> responseObserver) {
+        System.out.println("client sayHello:"+request.getMessage());
         HelloReply helloReply = HelloReply.newBuilder().setMessage("hello client.").build();
         responseObserver.onNext(helloReply);
         responseObserver.onCompleted();
@@ -53,6 +59,7 @@ public class MyService extends GreeterImplBase {
             @Override
             public void accept(StreamObserver<HelloStreamResponse> helloStreamResponseStreamObserver, String s) {
                 helloStreamResponseStreamObserver.onNext(HelloStreamResponse.newBuilder().setResponseInfo("broad cast:"+message).build());
+                helloStreamResponseStreamObserver.onCompleted();
             }
         });
     }

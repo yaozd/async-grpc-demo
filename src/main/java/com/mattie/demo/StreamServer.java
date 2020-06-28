@@ -15,6 +15,7 @@ public class StreamServer {
     public static void main(String[] args) throws IOException, InterruptedException {
         ServerBuilder<?> serverBuilder = ServerBuilder.forPort(8899);
         serverBuilder.addService(new MyService());
+        serverBuilder.maxInboundMessageSize(1024*1024*20);
         Server server = serverBuilder.build();
         server.start();
         broadCast();
