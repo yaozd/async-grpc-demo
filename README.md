@@ -1,3 +1,9 @@
+# 启动参考
+```
+WIN:
+java '-Dapp.log.level=error' -jar .\stream-server-f06a3c3.jar
+```
+
 # Grpc几种通信方式
 ```
 Grpc几种通信方式:
@@ -75,16 +81,4 @@ Navigate to ```https://www.jaegertracing.io/docs/getting-started/``` to access t
 ## 参考：
 - [Maven: jar包名自动添加git commit id](https://blog.csdn.net/wuzhimang/article/details/79393815)
 - [maven: 给jar包指定 定制的 logback.xml](https://blog.csdn.net/bigtree_3721/article/details/81289144)
-- [SpringBoot中log4j2、logback读取JVM启动参数 并 指定默认值](https://blog.csdn.net/m0_38135981/article/details/85341138)
-```
-jvm 启动参数如下
--Dapp.log.level=info
-<property name="LOG_LEVEL" value="${app.log.level:-info}"/>
-<root level="${LOG_LEVEL}">
-        <appender-ref ref="stdout"/>
-</root>
-注意
-" :- " 操作符为指定默认值。
-例如 " :-. " 默认目录为"." (当前目录)
-```
 - []()
