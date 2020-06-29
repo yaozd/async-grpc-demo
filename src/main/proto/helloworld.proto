@@ -6,23 +6,25 @@ option java_package = "com.mattie.grpc";
 option java_outer_classname = "HelloWorldProtos";
 
 service Greeter {
-  rpc SayHello (HelloRequest) returns (HelloReply) {}
+    rpc SayHello (HelloRequest) returns (HelloReply) {
+    }
 
-  rpc biStream (stream HelloStreamRequest) returns (stream HelloStreamResponse) {};
+    rpc biStream (stream HelloStreamRequest) returns (stream HelloStreamResponse) {
+    };
 }
 
 message HelloRequest {
-  string message = 1;
+    string message = 1;
 }
 
 message HelloReply {
-  string message = 1;
+    string message = 1;
 }
 
 message HelloStreamRequest {
-  string request_info = 1;
+    string request_info = 1;
 }
 
 message HelloStreamResponse {
-  string response_info = 1;
+    string response_info = 1;
 }

@@ -3,18 +3,19 @@ package com.resolver;
 import com.mattie.grpc.GreeterGrpc;
 import com.mattie.grpc.HelloWorldProtos;
 import io.grpc.*;
-import io.grpc.internal.DnsNameResolverProvider;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * java grpc client集成consul服务发现
  * https://www.jianshu.com/p/997505834bf5
  */
+@Slf4j
 public class GrpcClient {
     public static void main(String[] args) {
         /**
@@ -32,7 +33,7 @@ public class GrpcClient {
 
                             @Override
                             public String getServiceAuthority() {
-                                return uri.getAuthority()==null?String.valueOf(uri):uri.getAuthority();
+                                return uri.getAuthority() == null ? String.valueOf(uri) : uri.getAuthority();
                             }
 
                             /**
@@ -41,10 +42,10 @@ public class GrpcClient {
                              */
                             @Override
                             public void start(Listener listener) {
-                                List<EquivalentAddressGroup> servers=new ArrayList<>();
+                                List<EquivalentAddressGroup> servers = new ArrayList<>();
                                 servers.add(new EquivalentAddressGroup((new InetSocketAddress("localhost", 8899))));
                                 //Handles updates on resolved addresses and attributes.
-                                listener.onAddresses(servers,Attributes.EMPTY);
+                                listener.onAddresses(servers, Attributes.EMPTY);
                             }
 
                             @Override
@@ -64,7 +65,7 @@ public class GrpcClient {
         GreeterGrpc.GreeterBlockingStub blockingStub = GreeterGrpc.newBlockingStub(channel);
         HelloWorldProtos.HelloReply helloReply = blockingStub.
                 sayHello(HelloWorldProtos.HelloRequest.newBuilder().setMessage("hello wolrd").build());
-        System.out.println(helloReply.getMessage());
+        log.info(helloReply.getMessage());
     }
 
 }

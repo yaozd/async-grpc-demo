@@ -28,7 +28,7 @@ import java.util.logging.Logger;
  */
 public class GrpcClientPerfTest {
     private final static Logger logger = Logger.getLogger(GrpcClientPerfTest.class.getCanonicalName());
-    private final static int iterations = 1000;
+    private final static int iterations = 3000;
     @Rule
     public ContiPerfRule contiPerfRule = new ContiPerfRule();
 

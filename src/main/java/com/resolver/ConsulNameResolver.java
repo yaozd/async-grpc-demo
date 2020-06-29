@@ -1,20 +1,11 @@
 package com.resolver;
 
-import io.grpc.Attributes;
-import io.grpc.EquivalentAddressGroup;
-import io.grpc.NameResolver;
-import lombok.extern.slf4j.Slf4j;
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 /**
  * java grpc client集成consul服务发现
  * https://www.jianshu.com/p/997505834bf5
  */
-public class ConsulNameResolver {};
+public class ConsulNameResolver {
+};
 /*
 @Slf4j
 public class ConsulNameResolver extends NameResolver {

@@ -8,6 +8,7 @@ import java.io.IOException;
 public class StreamServer {
     /**
      * [gRPC入门-双向流式通信](https://www.jianshu.com/p/323806eb91bb)
+     *
      * @param args
      * @throws IOException
      * @throws InterruptedException
@@ -15,7 +16,7 @@ public class StreamServer {
     public static void main(String[] args) throws IOException, InterruptedException {
         ServerBuilder<?> serverBuilder = ServerBuilder.forPort(8899);
         serverBuilder.addService(new MyService());
-        serverBuilder.maxInboundMessageSize(1024*1024*20);
+        serverBuilder.maxInboundMessageSize(1024 * 1024 * 20);
         Server server = serverBuilder.build();
         server.start();
         broadCast();

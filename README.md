@@ -71,3 +71,8 @@ $ docker run -d --name jaeger \
   jaegertracing/all-in-one:latest
 ```
 Navigate to ```https://www.jaegertracing.io/docs/getting-started/``` to access the Jaeger UI.
+
+## 参考：
+- [Maven: jar包名自动添加git commit id](https://blog.csdn.net/wuzhimang/article/details/79393815)
+- [maven: 给jar包指定 定制的 logback.xml](https://blog.csdn.net/bigtree_3721/article/details/81289144)
+- []()

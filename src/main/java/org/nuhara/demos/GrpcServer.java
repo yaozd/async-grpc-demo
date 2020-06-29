@@ -1,34 +1,33 @@
 package org.nuhara.demos;
 
+import io.grpc.Server;
+import io.grpc.ServerBuilder;
+
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import io.grpc.Server;
-import io.grpc.ServerBuilder;
-import io.grpc.netty.NettyServerBuilder;
-import io.opentracing.Tracer;
-import io.opentracing.contrib.ServerTracingInterceptor;
-
 public class GrpcServer {
 
-	private static final Logger logger = Logger.getLogger(GrpcServer.class.getCanonicalName());
+    private static final Logger logger = Logger.getLogger(GrpcServer.class.getCanonicalName());
 //	private static final Tracer tracer = Tracing.initTracer("async-grpc-demo");
 
-	public static void main(String[] args) throws IOException, InterruptedException {
-		
+    public static void main(String[] args) throws IOException, InterruptedException {
+
 //		ServerTracingInterceptor tracingInterceptor = new ServerTracingInterceptor(tracer);
-		//maxConcurrentCallsPerConnection控制并发数 streamId
-		//NettyServerBuilder.forPort(8081).maxConcurrentCallsPerConnection(1);
-		Server server = ServerBuilder.forPort(8181)
+        //maxConcurrentCallsPerConnection控制并发数 streamId
+        //NettyServerBuilder.forPort(8081).maxConcurrentCallsPerConnection(1);
+        Server server = ServerBuilder.forPort(8181)
 //				.addService(tracingInterceptor.intercept(new ISOProcessorImpl()))
-				.addService(new ISOProcessorImpl())
-				.build();
+                .addService(new ISOProcessorImpl())
+                //设置消息的传输最大值
+                .maxInboundMessageSize(20971520)
+                .build();
 
-		server.start();
+        server.start();
 
-		logger.info("gRPC Server Started.");
+        logger.info("gRPC Server Started.");
 
-		server.awaitTermination();
-	}
+        server.awaitTermination();
+    }
 
 }

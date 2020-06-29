@@ -8,15 +8,15 @@ import io.opentracing.Tracer;
 
 public class Tracing {
 
-	public static Tracer initTracer(String service) {
-		SamplerConfiguration samplerConfiguration = SamplerConfiguration.fromEnv()
-				.withType(ConstSampler.TYPE)
-				.withParam(1);
-		ReporterConfiguration reporterConfiguration = ReporterConfiguration.fromEnv()
-				.withLogSpans(true);
-		Configuration configuration = new Configuration(service)
-				.withSampler(samplerConfiguration)
-				.withReporter(reporterConfiguration);
-		return configuration.getTracer();
-	}
+    public static Tracer initTracer(String service) {
+        SamplerConfiguration samplerConfiguration = SamplerConfiguration.fromEnv()
+                .withType(ConstSampler.TYPE)
+                .withParam(1);
+        ReporterConfiguration reporterConfiguration = ReporterConfiguration.fromEnv()
+                .withLogSpans(true);
+        Configuration configuration = new Configuration(service)
+                .withSampler(samplerConfiguration)
+                .withReporter(reporterConfiguration);
+        return configuration.getTracer();
+    }
 }

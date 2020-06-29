@@ -8,11 +8,13 @@ import java.util.Arrays;
  */
 
 public class DataUtil {
-    private DataUtil(){}
+    private DataUtil() {
+    }
 
     /**
      * 获得模拟的请求数据包
      * 1024*1024*4
+     *
      * @param size
      * @return
      */
