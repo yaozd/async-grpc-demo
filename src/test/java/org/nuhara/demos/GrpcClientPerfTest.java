@@ -40,7 +40,7 @@ public class GrpcClientPerfTest {
     }
 
     @Test
-    @PerfTest(threads = 100, invocations = 1000)
+    @PerfTest(threads = 200, invocations = 10000)
     public void clientTest() throws InterruptedException {
         final ManagedChannel channel = NettyChannelBuilder.forTarget("localhost:8888")
                 .eventLoopGroup(new NioEventLoopGroup(2))

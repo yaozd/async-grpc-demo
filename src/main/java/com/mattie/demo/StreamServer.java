@@ -2,8 +2,10 @@ package com.mattie.demo;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.netty.NettyServerBuilder;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class StreamServer {
     /**
@@ -14,9 +16,10 @@ public class StreamServer {
      * @throws InterruptedException
      */
     public static void main(String[] args) throws IOException, InterruptedException {
-        ServerBuilder<?> serverBuilder = ServerBuilder.forPort(8899);
+        ServerBuilder<?> serverBuilder = NettyServerBuilder.forPort(8899);
         serverBuilder.addService(new MyService());
         serverBuilder.maxInboundMessageSize(1024 * 1024 * 20);
+        serverBuilder.handshakeTimeout(10, TimeUnit.SECONDS);
         Server server = serverBuilder.build();
         server.start();
         broadCast();
