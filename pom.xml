@@ -19,8 +19,9 @@
         <protoc.version>3.5.1-1</protoc.version>
         <jaeger.version>0.30.0</jaeger.version>
         <logback.version>1.2.3</logback.version>
-        <main.class>com.mattie.demo.StreamServer</main.class>
-        <finalName>stream-server</finalName>
+        <!--        <main.class>com.mattie.demo.StreamServer</main.class>-->
+        <main.class>com.future.GrpcFutuerClientRunner</main.class>
+        <finalName>grpc-test-demo</finalName>
     </properties>
 
     <dependencies>
@@ -99,6 +100,7 @@
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-generator-annprocess</artifactId>
             <version>1.21</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
