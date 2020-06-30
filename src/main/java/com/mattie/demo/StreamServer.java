@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 public class StreamServer {
     /**
+     * java '-Dapp.log.level=error' -jar .\stream-server-f06a3c3.jar
+     *
      * [gRPC入门-双向流式通信](https://www.jianshu.com/p/323806eb91bb)
      *
      * @param args
