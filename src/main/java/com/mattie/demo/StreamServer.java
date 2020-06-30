@@ -3,11 +3,14 @@ package com.mattie.demo;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.netty.NettyServerBuilder;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class StreamServer {
+    private static final int port = Integer.parseInt(System.getProperty("app.port", "8899"));
     /**
      * java '-Dapp.log.level=error' -jar .\stream-server-f06a3c3.jar
      *
@@ -18,12 +21,13 @@ public class StreamServer {
      * @throws InterruptedException
      */
     public static void main(String[] args) throws IOException, InterruptedException {
-        ServerBuilder<?> serverBuilder = NettyServerBuilder.forPort(8899);
+        ServerBuilder<?> serverBuilder = NettyServerBuilder.forPort(port);
         serverBuilder.addService(new MyService());
         serverBuilder.maxInboundMessageSize(1024 * 1024 * 20);
         serverBuilder.handshakeTimeout(10, TimeUnit.SECONDS);
         Server server = serverBuilder.build();
         server.start();
+        log.error("Server start! ,port:{}",port);
         broadCast();
         server.awaitTermination();
     }
