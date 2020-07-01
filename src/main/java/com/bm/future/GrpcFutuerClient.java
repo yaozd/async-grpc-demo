@@ -1,4 +1,4 @@
-package com.future;
+package com.bm.future;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;

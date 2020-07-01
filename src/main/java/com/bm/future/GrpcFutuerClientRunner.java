@@ -1,4 +1,4 @@
-package com.future;
+package com.bm.future;
 
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.runner.RunnerException;

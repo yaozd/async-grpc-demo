@@ -20,7 +20,7 @@
         <jaeger.version>0.30.0</jaeger.version>
         <logback.version>1.2.3</logback.version>
         <!--        <main.class>com.mattie.demo.StreamServer</main.class>-->
-        <main.class>com.future.GrpcFutuerClientRunner</main.class>
+        <main.class>com.bm.future.GrpcFutuerClientRunner</main.class>
         <finalName>grpc-test-demo</finalName>
     </properties>
 
