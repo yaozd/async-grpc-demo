@@ -11,6 +11,8 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class StreamServer {
     private static final int port = Integer.parseInt(System.getProperty("app.port", "8899"));
+    private static boolean isBroadCast= Boolean.parseBoolean(System.getProperty("app.broadcast", "false"));
+
     /**
      * java '-Dapp.log.level=error' -jar .\stream-server-f06a3c3.jar
      *
@@ -28,7 +30,9 @@ public class StreamServer {
         Server server = serverBuilder.build();
         server.start();
         log.error("Server start! ,port:{}",port);
-        broadCast();
+        if(isBroadCast){
+            broadCast();
+        }
         server.awaitTermination();
     }
 
