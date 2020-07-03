@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Benchmark)
 public class GrpcFutuerClient {
     private static final String target = System.getProperty("app.target", "localhost:8888");
-    private static final int iterations = Integer.parseInt(System.getProperty("app.iterations", "1"));
+    private static final int iterations = Integer.parseInt(System.getProperty("app.iterations", "5000"));
     private ArrayList<IsoProcessor.BenchmarkMessage> requestList;
     private NioEventLoopGroup nioEventLoopGroup = new NioEventLoopGroup(2);
 
@@ -55,8 +55,9 @@ public class GrpcFutuerClient {
         for (IsoProcessor.BenchmarkMessage benchmarkMessage : requestList) {
             call(stub, benchmarkMessage, downLatch);
         }
-        downLatch.await();
-        channel.shutdownNow();
+        downLatch.await(30,TimeUnit.SECONDS);
+        //downLatch.await();
+        //channel.shutdownNow();
     }
 
     private ManagedChannel getChannel() {
@@ -80,7 +81,7 @@ public class GrpcFutuerClient {
 
             @Override
             public void onFailure(Throwable t) {
-                log.warn("Error_on: " + t.getMessage());
+                //log.warn("Error_on: " + t.getMessage());
                 downLatch.countDown();
             }
         });

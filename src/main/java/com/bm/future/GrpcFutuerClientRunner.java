@@ -12,8 +12,9 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
  * @Description:
  */
 public class GrpcFutuerClientRunner {
-    private static final int threads = Integer.parseInt(System.getProperty("app.threads", "1"));
-    private static final int forks = Integer.parseInt(System.getProperty("app.forks", "1"));
+    //private static final int threads = Integer.parseInt(System.getProperty("app.threads", "122"));
+    private static final int threads = Integer.parseInt(System.getProperty("app.threads", "122"));
+    private static final int forks = Integer.parseInt(System.getProperty("app.forks", "100"));
 
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
