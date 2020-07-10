@@ -38,29 +38,35 @@ public class BlockClientTest {
     }
     @After
     public void end(){
-        channel.shutdownNow();
+        //channel.shutdownNow();
     }
 
     /**
      * 测试：多个客户端同时发起请求
      */
     @Test
-    public void blockClientTest() {
+    public void blockClientTest() throws InterruptedException {
         int nThreads = 20;
         CompletableFuture[] tasks = new CompletableFuture[nThreads];
         for (int i = 0; i < nThreads; i++) {
             tasks[i] = CompletableFuture.runAsync(this::call, Executors.newCachedThreadPool());
         }
         CompletableFuture<Void> all = CompletableFuture.allOf(tasks);
+        //Thread.sleep(5000);
         //等待所有异步程序处理完成
         all.join();
     }
 
     public void call() {
-        log.info("COUNTER_VALUER:" + counter.incrementAndGet());
-        GreeterGrpc.GreeterBlockingStub blockingStub = GreeterGrpc.newBlockingStub(channel);
-        HelloWorldProtos.HelloReply helloReply = blockingStub.
-                sayHello(HelloWorldProtos.HelloRequest.newBuilder().setMessage("hello wolrd").build());
-        log.info(helloReply.getMessage());
+        try{
+            log.info("COUNTER_VALUER:" + counter.incrementAndGet());
+            GreeterGrpc.GreeterBlockingStub blockingStub = GreeterGrpc.newBlockingStub(channel);
+            HelloWorldProtos.HelloReply helloReply = blockingStub.
+                    sayHello(HelloWorldProtos.HelloRequest.newBuilder().setMessage("hello wolrd").build());
+            log.info(helloReply.getMessage());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 }
