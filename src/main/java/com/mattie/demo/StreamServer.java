@@ -23,8 +23,9 @@ public class StreamServer {
      * @throws InterruptedException
      */
     public static void main(String[] args) throws IOException, InterruptedException {
-        ServerBuilder<?> serverBuilder = NettyServerBuilder.forPort(port);
+        NettyServerBuilder serverBuilder = NettyServerBuilder.forPort(port);
         serverBuilder.addService(new MyService());
+        //serverBuilder.flowControlWindow(1000000000);
         serverBuilder.maxInboundMessageSize(1024 * 1024 * 20);
         serverBuilder.handshakeTimeout(10, TimeUnit.SECONDS);
         Server server = serverBuilder.build();
