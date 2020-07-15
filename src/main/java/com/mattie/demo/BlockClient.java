@@ -22,7 +22,9 @@ public class BlockClient {
                 //MAX: 2^31-1
                 .flowControlWindow(2147483647)
                 .usePlaintext();
-        ManagedChannel channel = channelBuilder.build();
+        ManagedChannel channel = channelBuilder
+                .intercept(new HeaderClientInterceptor())
+                .build();
         GreeterGrpc.GreeterBlockingStub blockingStub = GreeterGrpc.newBlockingStub(channel);
         for (int i = 0; i < 10000000; i++) {
             System.out.println(i);

@@ -2,6 +2,7 @@ package com.mattie.demo;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.ServerInterceptors;
 import io.grpc.netty.NettyServerBuilder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,6 +25,8 @@ public class StreamServer {
      */
     public static void main(String[] args) throws IOException, InterruptedException {
         NettyServerBuilder serverBuilder = NettyServerBuilder.forPort(port);
+        //serverBuilder.intercept(new HeaderServerInterceptor());
+        //serverBuilder.addService(ServerInterceptors.intercept(new MyService(), new HeaderServerInterceptor()));
         serverBuilder.addService(new MyService());
         //serverBuilder.flowControlWindow(1000000000);
         serverBuilder.maxInboundMessageSize(1024 * 1024 * 20);
