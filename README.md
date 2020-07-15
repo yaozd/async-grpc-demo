@@ -81,4 +81,9 @@ Navigate to ```https://www.jaegertracing.io/docs/getting-started/``` to access t
 ## 参考：
 - [Maven: jar包名自动添加git commit id](https://blog.csdn.net/wuzhimang/article/details/79393815)
 - [maven: 给jar包指定 定制的 logback.xml](https://blog.csdn.net/bigtree_3721/article/details/81289144)
-- []()
+- [对Guava类库的注释类型 VisibleForTesting的理解](https://www.cnblogs.com/yanlongpankow/p/6240563.html)
+```
+有一次问同事：除了用JAVA Reflection 来测试私有方法外，还有什么好的方法可以更简单的测试私有方法。
+同事回答，可以用Guava的VisibleForTesting。于是看了看这个注释的用法。
+VisibleForTesting的注解来提醒其他程序员: 这里为了测试私有方法把私有方法改成了Protected(受保护的)并放宽了访问限制
+```
