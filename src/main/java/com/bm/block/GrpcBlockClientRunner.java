@@ -13,8 +13,9 @@ import org.openjdk.jmh.runner.options.TimeValue;
  * @Description:
  */
 public class GrpcBlockClientRunner {
-    private static final int threads = Integer.parseInt(System.getProperty("app.threads", "500"));
-    private static final int forks = Integer.parseInt(System.getProperty("app.forks", "1"));
+    private static final int threads = Integer.parseInt(System.getProperty("app.threads", "200"));
+    private static final int forks = Integer.parseInt(System.getProperty("app.forks", "100"));
+    //seconds
     private static final int measurementTime = Integer.parseInt(System.getProperty("app.measurementTime", "60"));
     private static final int measurementIterations = Integer.parseInt(System.getProperty("app.measurementIterations", "2"));
     public static final String target = System.getProperty("app.target", "localhost:8888");

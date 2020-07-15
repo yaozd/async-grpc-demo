@@ -20,10 +20,11 @@ import java.util.concurrent.TimeUnit;
 public class GrpcBlockClient {
     private NioEventLoopGroup nioEventLoopGroup = new NioEventLoopGroup(2);
     private ManagedChannel channel = getChannel();
-
+    private GreeterGrpc.GreeterBlockingStub blockingStub= GreeterGrpc.newBlockingStub(channel);
     @Setup
     public void init() {
         log.error("BM_init:app.target[{}]", GrpcBlockClientRunner.target);
+        log.info("run-client");
     }
 
     @TearDown
@@ -35,11 +36,11 @@ public class GrpcBlockClient {
 
     @Benchmark()
     public void runClient() throws InterruptedException {
-        log.info("run-client");
-        GreeterGrpc.GreeterBlockingStub blockingStub = GreeterGrpc.newBlockingStub(channel);
         HelloWorldProtos.HelloReply helloReply = blockingStub.
                 sayHello(HelloWorldProtos.HelloRequest.newBuilder().setMessage("hello wolrd").build());
-        log.info(helloReply.getMessage());
+        if(log.isInfoEnabled()){
+            log.info(helloReply.getMessage());
+        }
     }
 
     private ManagedChannel getChannel() {
