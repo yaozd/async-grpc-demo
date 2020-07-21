@@ -39,8 +39,10 @@ public class MyService extends GreeterImplBase {
      */
     @Override
     public void sayHello(HelloRequest request, StreamObserver<HelloReply> responseObserver) {
-        log.info("client sayHello:" + request.getMessage());
-        HelloReply helloReply = HelloReply.newBuilder().setMessage("hello client.").build();
+        if(log.isInfoEnabled()){
+            log.info("client sayHello:" + request.getMessage());
+        }
+        HelloReply helloReply = HelloReply.newBuilder().setMessage(request.getMessage()).build();
         responseObserver.onNext(helloReply);
         responseObserver.onCompleted();
     }
