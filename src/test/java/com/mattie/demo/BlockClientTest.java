@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class BlockClientTest {
     ManagedChannel channel;
     AtomicInteger counter = new AtomicInteger();
+    AtomicInteger failCounter = new AtomicInteger();
 
     @Before
     public void init() {
@@ -32,13 +33,15 @@ public class BlockClientTest {
                 //通过keepAliveTime与keepAliveTimeout的时间调整,可以模拟RST_STREAM 帧
                 .keepAliveTime(10, TimeUnit.MINUTES)
                 .keepAliveTimeout(10, TimeUnit.MINUTES)
-                .idleTimeout(10,TimeUnit.MINUTES)
+                .idleTimeout(10, TimeUnit.MINUTES)
                 .usePlaintext();
         channel = channelBuilder.build();
     }
+
     @After
-    public void end(){
-        //channel.shutdownNow();
+    public void end() {
+        //模拟：远程主机强迫关闭了一个现有的连接
+        channel.shutdownNow();
     }
 
     /**
@@ -46,7 +49,7 @@ public class BlockClientTest {
      */
     @Test
     public void blockClientTest() throws InterruptedException {
-        int nThreads = 20;
+        int nThreads = 100;
         CompletableFuture[] tasks = new CompletableFuture[nThreads];
         for (int i = 0; i < nThreads; i++) {
             tasks[i] = CompletableFuture.runAsync(this::call, Executors.newCachedThreadPool());
@@ -55,16 +58,19 @@ public class BlockClientTest {
         //Thread.sleep(5000);
         //等待所有异步程序处理完成
         all.join();
+        log.info("fail count:" + failCounter.get());
     }
 
     public void call() {
-        try{
-            log.info("COUNTER_VALUER:" + counter.incrementAndGet());
+        try {
+            int value = counter.incrementAndGet();
+            log.info("COUNTER_VALUER:" + value);
             GreeterGrpc.GreeterBlockingStub blockingStub = GreeterGrpc.newBlockingStub(channel);
             HelloWorldProtos.HelloReply helloReply = blockingStub.
-                    sayHello(HelloWorldProtos.HelloRequest.newBuilder().setMessage("hello wolrd").build());
+                    sayHello(HelloWorldProtos.HelloRequest.newBuilder().setMessage("hello wolrd" + value).build());
             log.info(helloReply.getMessage());
-        }catch (Exception e){
+        } catch (Exception e) {
+            failCounter.incrementAndGet();
             e.printStackTrace();
         }
 
