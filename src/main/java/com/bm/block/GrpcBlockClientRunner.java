@@ -44,7 +44,7 @@ public class GrpcBlockClientRunner {
                 //forks:进程
                 .forks(forks)
                 .build();
-
+        System.err.printf("BM_init:app.target[%s%n]", GrpcBlockClientRunner.target);
         new org.openjdk.jmh.runner.Runner(opt).run();
     }
 }

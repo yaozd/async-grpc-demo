@@ -23,15 +23,15 @@ public class GrpcBlockClient {
     private GreeterGrpc.GreeterBlockingStub blockingStub= GreeterGrpc.newBlockingStub(channel);
     @Setup
     public void init() {
-        log.error("BM_init:app.target[{}]", GrpcBlockClientRunner.target);
-        log.info("run-client");
+        //log.error("BM_init:app.target[{}]", GrpcBlockClientRunner.target);
+        //log.info("run-client");
     }
 
     @TearDown
     public void end() {
         channel.shutdownNow();
         nioEventLoopGroup.shutdownGracefully();
-        log.error("BM_completed!");
+        //log.error("BM_completed!");
     }
 
     @Benchmark()
