@@ -3,6 +3,10 @@
 WIN:
 java '-Dapp.log.level=error' -jar .\stream-server-f06a3c3.jar
 ```
+# Grpc入门
+- [RPC原理以及GRPC详解](https://www.cnblogs.com/awesomeHai/p/liuhai.html)
+- [grpc应用详解](https://www.jianshu.com/p/5e75b20a267f)
+- [gRPC](https://blog.csdn.net/xuduorui/article/details/78278808)
 
 # Grpc几种通信方式
 ```
