@@ -11,7 +11,6 @@ import io.grpc.stub.StreamObserver;
 import io.netty.channel.nio.NioEventLoopGroup;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.openjdk.jmh.annotations.Threads;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
@@ -29,11 +28,13 @@ public class AsyncClient {
     private static int clientPayload = 0;
     private static int serverPayload = clientPayload;
     private static AtomicInteger failCounter = new AtomicInteger();
-    private static int nThreads = 5000;
-    private static CountDownLatch downLatch=new CountDownLatch(10);
+    private static int nThreads = 30000;
+    private static CountDownLatch downLatch = new CountDownLatch(nThreads + 1);
+    //private static CountDownLatch downLatch = new CountDownLatch(nThreads);
 
     /**
      * grpc-连接数测试：1万长连接的是否工作正常
+     *
      * @param args
      */
     @SneakyThrows
@@ -42,23 +43,26 @@ public class AsyncClient {
         CompletableFuture[] tasks = new CompletableFuture[nThreads];
         for (int i = 0; i < nThreads; i++) {
             tasks[i] = CompletableFuture.runAsync(AsyncClient::newConnection, Executors.newCachedThreadPool());
-            if(i%100==0){
-                Thread.sleep(5000);
+            if (i % 1000 == 0) {
+                Thread.sleep(1000);
             }
         }
         CompletableFuture<Void> all = CompletableFuture.allOf(tasks);
         //等待所有异步程序处理完成
         all.join();
-        downLatch.await(10,TimeUnit.SECONDS);
+        downLatch.await();
+        //downLatch.await(10, TimeUnit.SECONDS);
         log.info("total:{},fail count:{}", nThreads, failCounter.get());
+        System.exit(0);
     }
 
     public static void newConnection() {
-        Channel channel = getChannel("172.20.60.45:30009");
-        doStreamingCalls(channel);
+        //Channel channel = getChannel("172.20.60.45:30009");
+        Channel channel = getChannel("172.20.132.85:8888");
+        doUnaryCalls(channel);
     }
 
-    private static void doStreamingCalls(Channel channel) {
+    private static void doUnaryCalls(Channel channel) {
         final BenchmarkServiceGrpc.BenchmarkServiceStub stub = BenchmarkServiceGrpc.newStub(channel);
         //
         Messages.SimpleRequest req = newRequest();
@@ -83,7 +87,6 @@ public class AsyncClient {
 
             @Override
             public void onCompleted() {
-
             }
         });
     }
@@ -104,6 +107,7 @@ public class AsyncClient {
                 .eventLoopGroup(new NioEventLoopGroup(1))
                 .directExecutor()
                 .disableRetry()
+                .flowControlWindow(Integer.MAX_VALUE)
                 .maxInboundMessageSize(20971520)
                 //channel 长连接时间
                 .keepAliveTimeout(1000, TimeUnit.SECONDS)
