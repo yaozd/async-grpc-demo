@@ -28,7 +28,7 @@ import java.util.logging.Logger;
  */
 public class GrpcClientPerfTest {
     private final static Logger logger = Logger.getLogger(GrpcClientPerfTest.class.getCanonicalName());
-    private final static int iterations = 3000;
+    private final static int iterations = 5000;
     @Rule
     public ContiPerfRule contiPerfRule = new ContiPerfRule();
 
@@ -40,7 +40,8 @@ public class GrpcClientPerfTest {
     }
 
     @Test
-    @PerfTest(threads = 200, invocations = 10000)
+    //@PerfTest(threads = 300, invocations = 122)
+    @PerfTest(threads = 122, duration = 10000000)
     public void clientTest() throws InterruptedException {
         final ManagedChannel channel = NettyChannelBuilder.forTarget("localhost:8888")
                 .eventLoopGroup(new NioEventLoopGroup(2))
@@ -61,9 +62,9 @@ public class GrpcClientPerfTest {
         for (IsoProcessor.BenchmarkMessage benchmarkMessage : requestList) {
             call(stub, benchmarkMessage, downLatch);
         }
-        downLatch.await();
-        channel.shutdown();
-        channel.awaitTermination(10,TimeUnit.SECONDS);
+        downLatch.await(30,TimeUnit.SECONDS);
+        //channel.shutdownNow();
+        //channel.awaitTermination(10,TimeUnit.SECONDS);
     }
 
     private void call(HelloGrpc.HelloFutureStub stub, IsoProcessor.BenchmarkMessage message, CountDownLatch downLatch) {

@@ -25,15 +25,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 public class AsyncClient {
     private static Messages.PayloadType payloadType = Messages.PayloadType.COMPRESSABLE;
-    private static int clientPayload = 0;
+    //private static int clientPayload = 100000000;
+    private static int clientPayload = 1;
     private static int serverPayload = clientPayload;
     private static AtomicInteger failCounter = new AtomicInteger();
-    private static int nThreads = 30000;
-    private static CountDownLatch downLatch = new CountDownLatch(nThreads + 1);
+    private static int nThreads = 60000;
+    private static CountDownLatch downLatch = new CountDownLatch(nThreads);
     //private static CountDownLatch downLatch = new CountDownLatch(nThreads);
 
     /**
-     * grpc-连接数测试：1万长连接的是否工作正常
+     *
      *
      * @param args
      */
@@ -43,8 +44,9 @@ public class AsyncClient {
         CompletableFuture[] tasks = new CompletableFuture[nThreads];
         for (int i = 0; i < nThreads; i++) {
             tasks[i] = CompletableFuture.runAsync(AsyncClient::newConnection, Executors.newCachedThreadPool());
-            if (i % 1000 == 0) {
+            if (i % 500 == 0) {
                 Thread.sleep(1000);
+                log.info(i+"");
             }
         }
         CompletableFuture<Void> all = CompletableFuture.allOf(tasks);
@@ -106,13 +108,15 @@ public class AsyncClient {
         return NettyChannelBuilder.forTarget(target)
                 .eventLoopGroup(new NioEventLoopGroup(1))
                 .directExecutor()
-                .disableRetry()
-                .flowControlWindow(Integer.MAX_VALUE)
-                .maxInboundMessageSize(20971520)
+                //.disableRetry()
+                .keepAliveWithoutCalls(true)
+                .keepAliveTime(1000,TimeUnit.MINUTES)
+                //.flowControlWindow(Integer.MAX_VALUE)
+                //.maxInboundMessageSize(20971520)
                 //channel 长连接时间
-                .keepAliveTimeout(1000, TimeUnit.SECONDS)
+                .keepAliveTimeout(1000, TimeUnit.MINUTES)
                 //channel 空闲超时时间
-                .idleTimeout(1000, TimeUnit.SECONDS)
+                .idleTimeout(1000, TimeUnit.MINUTES)
                 .usePlaintext().build();
     }
 }
