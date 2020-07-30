@@ -29,6 +29,10 @@ public class StreamServer {
         //serverBuilder.addService(ServerInterceptors.intercept(new MyService(), new HeaderServerInterceptor()));
         serverBuilder.addService(new MyService());
         //serverBuilder.flowControlWindow(1000000000);
+        //模拟PING
+        //serverBuilder.permitKeepAliveWithoutCalls(true);
+        //serverBuilder.keepAliveTime(3,TimeUnit.SECONDS);
+        //PING
         serverBuilder.maxInboundMessageSize(1024 * 1024 * 20);
         serverBuilder.handshakeTimeout(10, TimeUnit.SECONDS);
         Server server = serverBuilder.build();
