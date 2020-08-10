@@ -91,3 +91,9 @@ Navigate to ```https://www.jaegertracing.io/docs/getting-started/``` to access t
 同事回答，可以用Guava的VisibleForTesting。于是看了看这个注释的用法。
 VisibleForTesting的注解来提醒其他程序员: 这里为了测试私有方法把私有方法改成了Protected(受保护的)并放宽了访问限制
 ```
+## 启动 -cp
+```
+java -cp .\grpc-test-demo-5866ea2.jar com.mattie.demo.StreamServer
+//No log runner
+java '-Dapp.log.level=error' -cp .\grpc-test-demo-5866ea2.jar com.mattie.demo.StreamServer
+```
