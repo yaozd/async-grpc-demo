@@ -28,16 +28,30 @@ public class ConnectionTest {
     private static int clientPayload = 1;
     private static int serverPayload = clientPayload;
     private static AtomicInteger failCounter = new AtomicInteger();
-    private static int nThreads = 60000;
+    private static int nThreads = 500;
     private static CountDownLatch downLatch = new CountDownLatch(nThreads);
 
     public static void main(String[] args) {
+        //循环测试连接-故意产生异常与连接断开，查看AR是否可以正常回收资源
+        for (int i = 0; i <nThreads; i++) {
+            log.error("i="+i);
+            try{
+                createConnection();
+            }catch (Throwable throwable){
+
+            }
+        }
+    }
+
+    private static void createConnection() {
         Messages.SimpleRequest request = newRequest();
         List<Channel> channelList = new ArrayList<>();
         for (int i = 0; i < nThreads; i++) {
             try {
-                channelList.add(newChannel("172.20.132.85:8888"));
-                boolean isAwait = await(i, 1000);
+                //channelList.add(newChannel("192.168.56.102:8888"));
+                //channelList.add(newChannel("127.0.0.1:8888"));
+                channelList.add(newChannel("127.0.0.1:50051"));
+                boolean isAwait = await(i, 10);
                 if (isAwait) {
                     for (Channel channel : channelList) {
                         new GrpcClient().doUnaryCalls(channel, request);
@@ -51,6 +65,10 @@ public class ConnectionTest {
             new GrpcClient().doUnaryCalls(channel, request);
         }
         log.info("done");
+        for (Channel channel : channelList) {
+            ManagedChannel managedChannel = (ManagedChannel) channel;
+            managedChannel.shutdownNow();
+        }
     }
 
     private static boolean await(int i, int channelNum) {
