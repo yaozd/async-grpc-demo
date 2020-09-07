@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option java_package = "com.demo.grpcPing";
+
+message PingRequest {
+  string code = 1;
+}
+
+message PingResponse {
+  string code = 1;
+}
+
+service GrpcPing {
+  rpc Ping (PingRequest) returns (PingResponse) {};
+}
