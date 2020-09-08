@@ -12,7 +12,9 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class PingClient {
-    private static int port = 1900;
+    //private static int port = 8899;
+    private static int port = 50051;
+    //private static int port = 9000;
     private static String host;
 
     public static void main(String[] args) {
@@ -32,8 +34,16 @@ public class PingClient {
         ManagedChannel channel = channelBuilder.build();
         log.error("Client start! ,host:{};port:{}",host, port);
         GrpcPingGrpc.GrpcPingBlockingStub grpcPingBlockingStub = GrpcPingGrpc.newBlockingStub(channel);
-        Health.PingResponse ping = grpcPingBlockingStub.ping(Health.PingRequest.newBuilder().build());
+        //
+        Health.PingResponse ping = grpcPingBlockingStub.ping(Health.PingRequest.newBuilder()
+                .setCode(System.currentTimeMillis()+"")
+                .build());
         System.out.println(ping);
+        for (int i = 0; i < 10_0000; i++) {
+            grpcPingBlockingStub.ping(Health.PingRequest.newBuilder()
+                    .setCode(System.currentTimeMillis()+"")
+                    .build());
+        }
         channel.shutdownNow();
     }
 }

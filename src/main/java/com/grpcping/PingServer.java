@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class PingServer {
 
-    private static int port = 1900;
+    private static int port = 8899;
 
     public static void main(String[] args) throws IOException, InterruptedException {
         NettyServerBuilder serverBuilder = NettyServerBuilder.forPort(port);
