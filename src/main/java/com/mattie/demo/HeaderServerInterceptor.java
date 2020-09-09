@@ -23,6 +23,9 @@ public class HeaderServerInterceptor implements ServerInterceptor {
             ServerCallHandler<ReqT, RespT> next) {
         log.info("header received from client:" + requestHeaders);
         String groupId = requestHeaders.get(CUSTOM_HEADER_KEY);
+        //获取grpc请求host
+        String authority = call.getAuthority();
+        log.info(authority);
         log.info("receive groupId:"+groupId);
         //模拟异常
         if("68".equalsIgnoreCase(groupId)){
@@ -35,7 +38,7 @@ public class HeaderServerInterceptor implements ServerInterceptor {
         return next.startCall(new ForwardingServerCall.SimpleForwardingServerCall<ReqT, RespT>(call) {
             @Override
             public void sendHeaders(Metadata responseHeaders) {
-                responseHeaders.put(CUSTOM_HEADER_KEY, requestHeaders.get(CUSTOM_HEADER_KEY));
+                //responseHeaders.put(CUSTOM_HEADER_KEY, requestHeaders.get(CUSTOM_HEADER_KEY));
                 super.sendHeaders(responseHeaders);
             }
         }, requestHeaders);
