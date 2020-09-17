@@ -18,6 +18,8 @@ public class HeaderClientInterceptor implements ClientInterceptor {
     @VisibleForTesting
     static final Metadata.Key<String> CUSTOM_HEADER_KEY =
             Metadata.Key.of("groupID", Metadata.ASCII_STRING_MARSHALLER);
+    static final Metadata.Key<String> ZONE_IGNORE =
+            Metadata.Key.of("zoneIgnore", Metadata.ASCII_STRING_MARSHALLER);
 
     @Override
     public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(MethodDescriptor<ReqT, RespT> method,
@@ -36,6 +38,7 @@ public class HeaderClientInterceptor implements ClientInterceptor {
 //                log.info("header group id :" + groupID);
                 /* put custom header */
                 headers.put(CUSTOM_HEADER_KEY, groupID);
+                //headers.put(ZONE_IGNORE,String.valueOf(true));
                 super.start(new ForwardingClientCallListener.SimpleForwardingClientCallListener<RespT>(responseListener) {
                     @Override
                     public void onHeaders(Metadata headers) {
