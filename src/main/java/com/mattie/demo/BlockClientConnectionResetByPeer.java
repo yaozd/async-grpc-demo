@@ -1,5 +1,7 @@
 package com.mattie.demo;
 
+import com.demo.grpcPing.GrpcPingGrpc;
+import com.demo.grpcPing.Health;
 import com.mattie.grpc.GreeterGrpc;
 import com.mattie.grpc.HelloWorldProtos;
 import io.grpc.ManagedChannel;
@@ -41,12 +43,17 @@ public class BlockClientConnectionResetByPeer {
                 .intercept(new HeaderClientInterceptor())
                 .build();
         channel.resetConnectBackoff();
-        GreeterGrpc.GreeterBlockingStub blockingStub = GreeterGrpc.newBlockingStub(channel);
+
         try {
-            HelloWorldProtos.HelloReply helloReply = blockingStub.
-                    //测试大文件传输
-                    //sayHello(HelloWorldProtos.HelloRequest.newBuilder().setMessage("hello wolrd"+ DataUtil.getMockData(1024*1024*10)).build());
-                            sayHello(HelloWorldProtos.HelloRequest.newBuilder().setMessage("hello wolrd").build());
+            sendGrpcPing(channel);
+            sendData(channel);
+            for (int i = 0; i < 1000; i++) {
+                Thread.sleep(5000);
+                sendGrpcPing(channel);
+            }
+            sendGrpcPing(channel);
+            Thread.sleep(1000*120);
+            sendData(channel);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -56,5 +63,21 @@ public class BlockClientConnectionResetByPeer {
         System.out.println("done!");
         //模拟：等待状态！
         Thread.currentThread().join();
+    }
+
+    private static void sendGrpcPing(ManagedChannel channel) {
+        GrpcPingGrpc.GrpcPingBlockingStub grpcPingBlockingStub = GrpcPingGrpc.newBlockingStub(channel);
+        //
+        Health.PingResponse ping = grpcPingBlockingStub.ping(Health.PingRequest.newBuilder()
+                .setCode(System.currentTimeMillis()+"")
+                .build());
+    }
+
+    private static void sendData(ManagedChannel channel) {
+        GreeterGrpc.GreeterBlockingStub blockingStub = GreeterGrpc.newBlockingStub(channel);
+        HelloWorldProtos.HelloReply helloReply = blockingStub.
+                //测试大文件传输
+                //sayHello(HelloWorldProtos.HelloRequest.newBuilder().setMessage("hello wolrd"+ DataUtil.getMockData(1024*1024*10)).build());
+                        sayHello(HelloWorldProtos.HelloRequest.newBuilder().setMessage("hello wolrd").build());
     }
 }
