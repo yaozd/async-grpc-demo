@@ -26,13 +26,13 @@ public class BlockClientOneCallTest {
     public ContiPerfRule i = new ContiPerfRule();
 
     private ManagedChannel channel;
-
+    private ManagedChannelBuilder<?> channelBuilder;
     @Before
     public void init() {
 
         sendConfig("/config/protocol/http2.json");
         //
-        ManagedChannelBuilder<?> channelBuilder = ManagedChannelBuilder
+        channelBuilder = ManagedChannelBuilder
                 .forAddress("localhost", 50051)
                 .maxInboundMessageSize(1024 * 1024 * 20)
                 //发起RST_STREAM 帧（RST_STREAM 类型的 frame，可以在不断开连接的前提下取消某个 request 的 stream）：
@@ -59,5 +59,17 @@ public class BlockClientOneCallTest {
         HelloWorldProtos.HelloReply helloReply = blockingStub.
                 sayHello(HelloWorldProtos.HelloRequest.newBuilder().setMessage("hello wolrd").build());
         log.info(helloReply.getMessage());
+    }
+
+    @Test
+    @PerfTest(threads = 50, invocations = 50)
+    public void multiChannelCallTest() throws InterruptedException {
+        ManagedChannel channel = channelBuilder.build();
+        GreeterGrpc.GreeterBlockingStub blockingStub = GreeterGrpc.newBlockingStub(channel);
+        HelloWorldProtos.HelloReply helloReply = blockingStub.
+                sayHello(HelloWorldProtos.HelloRequest.newBuilder().setMessage("hello wolrd").build());
+        log.info(helloReply.getMessage());
+        //channel.shutdownNow();
+        Thread.currentThread().join();
     }
 }
