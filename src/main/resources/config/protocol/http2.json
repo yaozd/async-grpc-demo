@@ -1,0 +1,58 @@
+{
+  "endpoints": {
+    "entryEndpoints": [
+      {
+        "namespace": "test.demo_ENTRY",
+        "nodes": [
+          {
+            "host": "0.0.0.0",
+            "port": 50051,
+            "protocol": "HTTP2"
+          }
+        ]
+      }
+    ],
+    "targetEndpoints": [
+      {
+        "namespace": "test.demo_TARGET",
+        "nodes": [
+          {
+            "host": "127.0.0.1",
+            "port": 8899,
+            "protocol": "HTTP2",
+            "protocolConfig": {
+              "overrideHostHeader": false
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "pipelines": [
+    {
+      "entryEndpoint": "test.demo_ENTRY",
+      "postFlow": [
+        {
+          "handler": "grpcResponseCodePostHandler"
+        }
+      ],
+      "preFlow": [
+        {
+          "handler": "httpRoutePreHandler",
+          "handlerParams": [
+            "*"
+          ]
+        },
+        {
+          "handler": "httpHeaderSetterPreHandler",
+          "handlerParams": [
+            ":authority",
+            "192.168.1.1:50051"
+          ]
+        }
+      ],
+      "targetEndpoint": "test.demo_TARGET"
+    }
+  ],
+  "version": 1
+}

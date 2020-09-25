@@ -19,11 +19,11 @@
         <protoc.version>3.5.1-1</protoc.version>
         <jaeger.version>0.30.0</jaeger.version>
         <logback.version>1.2.3</logback.version>
-<!--                <main.class>com.mattie.demo.StreamServer</main.class>-->
-<!--        <main.class>com.bm.future.GrpcFutuerClientRunner</main.class>-->
-<!--        <main.class>com.bm.block.GrpcBlockClientRunner</main.class>-->
-<!--        <main.class>io.grpc.benchmarks.connection.ConnectionTest</main.class>-->
-<!--        <finalName>grpc-AsyncClient-ConnectionTest</finalName>-->
+        <!--                <main.class>com.mattie.demo.StreamServer</main.class>-->
+        <!--        <main.class>com.bm.future.GrpcFutuerClientRunner</main.class>-->
+        <!--        <main.class>com.bm.block.GrpcBlockClientRunner</main.class>-->
+        <!--        <main.class>io.grpc.benchmarks.connection.ConnectionTest</main.class>-->
+        <!--        <finalName>grpc-AsyncClient-ConnectionTest</finalName>-->
         <finalName>grpc-test-demo</finalName>
     </properties>
 
@@ -104,6 +104,22 @@
             <artifactId>jmh-generator-annprocess</artifactId>
             <version>1.21</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>fluent-hc</artifactId>
+            <version>4.5.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.databene</groupId>
+            <artifactId>contiperf</artifactId>
+            <version>2.1.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>dns-cache-manipulator</artifactId>
+            <version>1.5.0</version>
         </dependency>
     </dependencies>
 
@@ -190,12 +206,12 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-<!--                            <transformers>-->
-<!--                                <transformer-->
-<!--                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">-->
-<!--                                    <mainClass>${main.class}</mainClass>-->
-<!--                                </transformer>-->
-<!--                            </transformers>-->
+                            <!--                            <transformers>-->
+                            <!--                                <transformer-->
+                            <!--                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">-->
+                            <!--                                    <mainClass>${main.class}</mainClass>-->
+                            <!--                                </transformer>-->
+                            <!--                            </transformers>-->
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>
@@ -207,8 +223,8 @@
                                     </excludes>
                                 </filter>
                             </filters>
-<!--                            git commit short id-->
-<!--                            <finalName>${finalName}-${git.commit.id.abbrev}</finalName>-->
+                            <!--                            git commit short id-->
+                            <!--                            <finalName>${finalName}-${git.commit.id.abbrev}</finalName>-->
                             <finalName>${finalName}</finalName>
                         </configuration>
                     </execution>
