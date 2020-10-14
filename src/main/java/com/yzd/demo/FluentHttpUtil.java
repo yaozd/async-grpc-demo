@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import java.io.BufferedReader;
@@ -28,6 +29,8 @@ public class FluentHttpUtil {
         try {
             String configData = readResource(path);
             String response = Request.Post(API_ROUTER_URL)
+                    //短链接模式 close http
+                    .setHeader(HTTP.CONN_DIRECTIVE, HTTP.CONN_CLOSE)
                     .bodyString(configData, ContentType.APPLICATION_JSON)
                     .connectTimeout(REQUEST_CONNECT_TIMEOUT)
                     .socketTimeout(REQUEST_SOCKET_TIMEOUT)
