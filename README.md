@@ -97,3 +97,33 @@ java -cp .\grpc-test-demo-5866ea2.jar com.mattie.demo.StreamServer
 //No log runner
 java '-Dapp.log.level=error' -cp .\grpc-test-demo-5866ea2.jar com.mattie.demo.StreamServer
 ```
+
+## [proto数据结构定义](https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf)
+- [https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf](https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf)
+```
+wrapper.proto 包装后的基本数据类型
+empty.proto void方法的返回类型
+map_untittesst.proto map数据结构类型参考
+
+```
+- [protobuf 三个关键字required、optional、repeated的理解](https://lovemiffy.blog.csdn.net/article/details/82751720)
+```
+required关键字
+顾名思义，就是必须的意思，数据发送方和接收方都必须处理这个字段，不然还怎么通讯呢
+
+optional关键字
+字面意思是可选的意思，具体protobuf里面怎么处理这个字段呢，就是protobuf处理的时候另外加了一个bool的变量，用来标记这个optional字段是否有值，发送方在发送的时候，如果这个字段有值，那么就给bool变量标记为true，否则就标记为false，接收方在收到这个字段的同时，也会收到发送方同时发送的bool变量，拿着bool变量就知道这个字段是否有值了，这就是option的意思。
+
+这也就是他们说的所谓平滑升级，无非就是个兼容的意思。
+
+其实和传输参数的时候，给出数组地址和数组数量是一个道理。
+
+repeated关键字
+字面意思大概是重复的意思，其实protobuf处理这个字段的时候，也是optional字段一样，另外加了一个count计数变量，用于标明这个字段有多少个，这样发送方发送的时候，同时发送了count计数变量和这个字段的起始地址，接收方在接受到数据之后，按照count来解析对应的数据即可。
+```
+- [Oneof](https://www.cnblogs.com/sanshengshui/p/9739521.html)
+```
+最多只能同时设置一个字段:
+如果您有一个包含许多字段的消息，并且最多只能同时设置一个字段，则可以使用oneof功能强制执行此行为并节省内存。
+```
+- [Protobuf 语言指南(proto3)](https://www.cnblogs.com/sanshengshui/p/9739521.html)
