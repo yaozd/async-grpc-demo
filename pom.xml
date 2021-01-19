@@ -70,6 +70,16 @@
             <artifactId>grpc-opentracing</artifactId>
             <version>0.2.0</version>
         </dependency>
+        <dependency>
+            <groupId>io.opentracing</groupId>
+            <artifactId>opentracing-mock</artifactId>
+            <version>0.30.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.opentracing</groupId>
+            <artifactId>opentracing-api</artifactId>
+            <version>0.30.0</version>
+        </dependency>
         <!-- log -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
