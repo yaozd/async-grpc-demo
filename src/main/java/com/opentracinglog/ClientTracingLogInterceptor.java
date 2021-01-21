@@ -1,5 +1,6 @@
 package com.opentracinglog;
 
+import cn.hutool.core.net.NetUtil;
 import io.grpc.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,7 +20,12 @@ public class ClientTracingLogInterceptor implements ClientInterceptor {
     public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(MethodDescriptor<ReqT, RespT> method, CallOptions callOptions, Channel next) {
         RoutingLog routingLog = new RoutingLog();
         routingLog.setRole(ROLE_CLIENT);
-        routingLog.setHost(next.authority() == null ? HYPHEN : next.authority());
+        String authority = next.authority() == null ? HYPHEN : next.authority();
+        routingLog.setHost(authority);
+        //缺陷1：目前无法获取到服务端真实IP，暂时只能使用host来代替。
+        routingLog.setTargetIp(authority);
+        //缺陷2：当本机存在2张网卡的时候，本机IP设置不一定准确。
+        routingLog.setEntryIp(NetUtil.getLocalhost().getHostAddress());
         routingLog.setUri(method.getFullMethodName());
         routingLog.setRequestType(method.getType() == null ? HYPHEN : method.getType().toString());
         return new TracingSimpleForwardingClientCall<ReqT, RespT>(next.newCall(method, callOptions), routingLog);
