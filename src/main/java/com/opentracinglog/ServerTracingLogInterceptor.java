@@ -35,9 +35,9 @@ public class ServerTracingLogInterceptor implements ServerInterceptor {
             public void close(Status status, Metadata trailers) {
                 log.info("Call closed!");
                 if (status == Status.OK) {
-                    routingLog.setEntryResponseCode(SUCCESS_STATUS);
+                    routingLog.setInnerResponseCode(SUCCESS_STATUS);
                 } else {
-                    routingLog.setEntryResponseCode(status.getCode().value());
+                    routingLog.setInnerResponseCode(status.getCode().value());
                     routingLog.setInterruptMessage(String.valueOf(status.getCause()));
                     log.error("[TRACING_LOG_CATCH_EXCEPTION]:traceId[{}]", routingLog.getTraceId(), status.getCause());
                 }
@@ -78,8 +78,8 @@ public class ServerTracingLogInterceptor implements ServerInterceptor {
             log.info("Finished sending messages");
             try {
                 delegate().onHalfClose();
-            } catch (Exception ex) {
-                routingLog.setEntryResponseCode(Status.UNKNOWN.getCode().value());
+            } catch (Throwable ex) {
+                routingLog.setInnerResponseCode(Status.UNKNOWN.getCode().value());
                 routingLog.setInterruptMessage(String.valueOf(ex));
                 log.error("[TRACING_LOG_CATCH_EXCEPTION]:traceId[{}]", routingLog.getTraceId(), ex);
                 throw ex;

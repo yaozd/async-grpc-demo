@@ -32,8 +32,14 @@ public class RoutingLog {
     private String requestType;
     private String targetIp = HYPHEN;
     private String entryIp = HYPHEN;
+    /**
+     * 后端响应状态
+     */
     private int targetResponseCode = UNKNOWN_STATUS;
-    private int entryResponseCode = UNKNOWN_STATUS;
+    /**
+     * 内部响应状态
+     */
+    private int innerResponseCode = UNKNOWN_STATUS;
     private String interruptMessage = EMPTY_STR;
 
     public RoutingLog() {
