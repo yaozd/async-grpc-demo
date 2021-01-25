@@ -1,6 +1,7 @@
 package com.opentracinglog;
 
 import cn.hutool.core.net.NetUtil;
+import com.GrpcUtil;
 import io.grpc.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,6 +28,7 @@ public class ClientTracingLogInterceptor implements ClientInterceptor {
         //缺陷2：当本机存在2张网卡的时候，本机IP设置不一定准确。
         routingLog.setEntryIp(NetUtil.getLocalhost().getHostAddress());
         routingLog.setUri(method.getFullMethodName());
+        routingLog.setGrpcService(GrpcUtil.getGrpcService(method.getFullMethodName()));
         routingLog.setRequestType(method.getType() == null ? HYPHEN : method.getType().toString());
         return new TracingSimpleForwardingClientCall<ReqT, RespT>(next.newCall(method, callOptions), routingLog);
     }

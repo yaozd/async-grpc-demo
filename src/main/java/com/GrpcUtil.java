@@ -3,14 +3,21 @@ package com;
 import io.grpc.Metadata;
 import io.grpc.stub.AbstractStub;
 import io.grpc.stub.MetadataUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
+
+import static com.StringConstant.HYPHEN;
 
 /**
  * @Author: yaozh
  * @Description:
  */
 public class GrpcUtil {
+    public static final String GRPC_PATH_SEPARATOR = "/";
+
+    public static final String GRPC_SERVICE_ROUTER_PREFIX = "grpc:";
+
     /**
      * gRPC请求中对header进行处理
      * https://blog.csdn.net/xuguobiao/article/details/52142337
@@ -30,5 +37,19 @@ public class GrpcUtil {
             }
         }
         return MetadataUtils.attachHeaders(stub, extraHeaders);
+
+    }
+
+    /**
+     * 获取grpc服务名
+     * @param path
+     * @return
+     */
+    public static String getGrpcService(String path) {
+        String service = StringUtils.substringBeforeLast(path, GRPC_PATH_SEPARATOR);
+        if (StringUtils.isBlank(service)) {
+            return HYPHEN;
+        }
+        return service;
     }
 }

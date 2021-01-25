@@ -5,6 +5,18 @@
   ```
 - [GRPC错误处理](https://www.cnblogs.com/resentment/p/6883153.html)
 - [GRPC拦截器](https://www.cnblogs.com/resentment/p/6818753.html)
+    ```
+  serviceDef = ServerInterceptors.intercept(serviceDef,
+      interceptor1,
+      interceptor2,
+      interceptor3);
+  
+  // is equivalent to
+  
+  serviceDef = ServerInterceptors.intercept(serviceDef, interceptor1);
+  serviceDef = ServerInterceptors.intercept(serviceDef, interceptor2);
+  serviceDef = ServerInterceptors.intercept(serviceDef, interceptor3);
+  ```
 - [GRPC测试](https://www.cnblogs.com/resentment/p/6914283.html)
 - [GRPC与JSON格式互转](https://www.cnblogs.com/resentment/p/6938180.html)
     ```

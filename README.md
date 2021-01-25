@@ -129,3 +129,8 @@ repeated关键字
 如果您有一个包含许多字段的消息，并且最多只能同时设置一个字段，则可以使用oneof功能强制执行此行为并节省内存。
 ```
 - [Protobuf 语言指南(proto3)](https://www.cnblogs.com/sanshengshui/p/9739521.html)
+
+## 日志的链路追踪
+- http
+    - [SpringBoot日志的链路追踪](https://blog.lupf.cn/articles/2020/06/04/1591273110824.html)
+- grpc

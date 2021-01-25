@@ -28,6 +28,7 @@ public class RoutingLog {
     private String role;
     private String host;
     private String uri;
+    private String grpcService;
     private long totalCost;
     private String requestType;
     private String targetIp = HYPHEN;
