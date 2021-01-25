@@ -7,6 +7,8 @@ java '-Dapp.log.level=error' -jar .\stream-server-f06a3c3.jar
 - [RPC原理以及GRPC详解](https://www.cnblogs.com/awesomeHai/p/liuhai.html)
 - [grpc应用详解](https://www.jianshu.com/p/5e75b20a267f)
 - [gRPC](https://blog.csdn.net/xuduorui/article/details/78278808)
+- [GRPC的四种服务类型](https://www.cnblogs.com/resentment/p/6792029.html)
+-
 
 # Grpc几种通信方式
 ```

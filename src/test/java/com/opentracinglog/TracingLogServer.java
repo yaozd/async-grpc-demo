@@ -4,8 +4,10 @@ import com.mattie.grpc.GreeterGrpc;
 import com.mattie.grpc.HelloWorldProtos;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
+import org.nuhara.demos.TokenServerInterceptor;
 
 import java.io.IOException;
 
@@ -16,6 +18,7 @@ public class TracingLogServer {
 
     void start() throws IOException, InterruptedException {
         server = ServerBuilder.forPort(port)
+                .intercept(new TokenServerInterceptor())//增加token
                 .intercept(new ServerTracingLogInterceptor())
                 .addService(new GreeterImpl())
                 .build()
@@ -48,8 +51,14 @@ public class TracingLogServer {
             //简单模拟人为异常
             //int a=0;
             //int c=1/a;
+            //responseObserver.onError(new RuntimeException("test"));
+            //
+            //返回一个包装成Exception的Status来返回错误信息，如果直接使用Throwable，客户端无法获得错误信息
+            //responseObserver.onError(Status.INTERNAL.withDescription("error desc").asRuntimeException());
+            //
             responseObserver.onNext(reply);
             responseObserver.onCompleted();
+
         }
     }
 }

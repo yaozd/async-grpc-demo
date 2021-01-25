@@ -4,6 +4,8 @@ import com.mattie.grpc.GreeterGrpc;
 import com.mattie.grpc.HelloWorldProtos;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,7 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TracingLogClient {
     private final ManagedChannel channel;
-    private final GreeterGrpc.GreeterBlockingStub blockingStub;
+    @Getter
+    @Setter
+    private GreeterGrpc.GreeterBlockingStub blockingStub;
 
     public TracingLogClient(String host, int port, ClientTracingLogInterceptor tracingLogInterceptor) {
         channel = ManagedChannelBuilder.forAddress(host, port)
@@ -24,9 +28,10 @@ public class TracingLogClient {
         blockingStub = GreeterGrpc.newBlockingStub(channel);
     }
 
-    void shutdown(){
+    void shutdown() {
         channel.shutdown();
     }
+
 
     @SneakyThrows
     boolean greet(String name) {

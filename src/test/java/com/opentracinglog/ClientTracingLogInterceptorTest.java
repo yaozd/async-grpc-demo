@@ -1,13 +1,14 @@
 package com.opentracinglog;
 
-import com.opentracing.TracedClient;
+import com.GrpcUtil;
 import lombok.SneakyThrows;
 import org.databene.contiperf.PerfTest;
 import org.databene.contiperf.junit.ContiPerfRule;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Author: yaozh
@@ -19,9 +20,12 @@ public class ClientTracingLogInterceptorTest {
 
     @Test
     @SneakyThrows
-    @PerfTest(threads = 1, invocations = 10)
+    //@PerfTest(threads = 1, invocations = 10)
     public void tracedLogClientTest() {
         TracingLogClient client = new TracingLogClient("localhost", 50051, new ClientTracingLogInterceptor());
+        Map<String, String> header = new HashMap<>();
+        header.put("token", "xxx-xxx-xxxx");
+        //client.setBlockingStub(GrpcUtil.attachHeaders(client.getBlockingStub(), header));
         client.greet("A");
         client.shutdown();
     }

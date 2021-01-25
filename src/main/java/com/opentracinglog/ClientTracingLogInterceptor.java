@@ -70,7 +70,8 @@ public class ClientTracingLogInterceptor implements ClientInterceptor {
                         routingLog.setTargetResponseCode(SUCCESS_STATUS);
                     } else {
                         routingLog.setTargetResponseCode(status.getCode().value());
-                        routingLog.setInterruptMessage(String.valueOf(status.getCause()));
+                        routingLog.setInterruptMessage(status.getCause() == null ?
+                                status.getDescription() : String.valueOf(status.getCause()));
                     }
                     routingLog.finish();
                     delegate().onClose(status, trailers);
