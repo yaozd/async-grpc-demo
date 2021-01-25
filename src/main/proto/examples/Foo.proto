@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option java_package = "com.examples";
+option java_outer_classname = "FooProto";
+
+message FooRequest {
+    string code = 1;
+}
+
+message FooResponse {
+    string code = 1;
+}
+
+service Foo {
+    // 简单rpc
+    rpc simpleHello (FooRequest) returns (FooResponse) {
+    };
+    // 服务端流式rpc
+    rpc serverStreamHello (FooRequest) returns (stream FooResponse) {
+    }
+    // 客户端流式rpc
+    rpc clientStreamHello (stream FooRequest) returns (FooResponse) {
+    }
+    // 双向流式rpc
+    rpc biStreamHello (stream FooRequest) returns (stream FooResponse) {
+    }
+}
