@@ -25,6 +25,7 @@
         <!--        <main.class>io.grpc.benchmarks.connection.ConnectionTest</main.class>-->
         <!--        <finalName>grpc-AsyncClient-ConnectionTest</finalName>-->
         <finalName>grpc-test-demo</finalName>
+        <prometheus.version>0.9.0</prometheus.version>
     </properties>
 
     <dependencies>
@@ -145,6 +146,21 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.9</version>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient</artifactId>
+            <version>${prometheus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_hotspot</artifactId>
+            <version>${prometheus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_common</artifactId>
+            <version>${prometheus.version}</version>
         </dependency>
     </dependencies>
 
