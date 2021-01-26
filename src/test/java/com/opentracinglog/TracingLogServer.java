@@ -5,6 +5,7 @@ import com.mattie.grpc.HelloWorldProtos;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.ServerInterceptor;
+import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import lombok.NonNull;
 import lombok.SneakyThrows;

@@ -98,6 +98,12 @@ public class ServerPrometheusInterceptor implements ServerInterceptor {
         @Override
         public void onCancel() {
             log.info("Call cancelled");
+            //TODO 暂时不确定是否要在这里也加入调用，目前还不清楚什么触发此条伯
+            routingPrometheusMetrics.incrementRequestCounter(routingLog.getGrpcService(),
+                    String.valueOf(routingLog.getInnerResponseCode()),
+                    String.valueOf(routingLog.getTargetResponseCode()));
+            routingPrometheusMetrics.changeRequestLatencyHistogram(routingLog.getGrpcService(),
+                    ROLE_CLIENT, routingLog.getTotalCost());
             routingLog.finish();
             delegate().onCancel();
         }

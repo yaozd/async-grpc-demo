@@ -46,7 +46,7 @@ public class ClientPrometheusInterceptorTest {
         TracingLogClient client = new TracingLogClient("localhost", 50051, new ClientPrometheusInterceptor(routingPrometheusMetrics));
         Map<String, String> header = new HashMap<>();
         header.put("token", "xxx-xxx-xxxx");
-        //client.setBlockingStub(GrpcUtil.attachHeaders(client.getBlockingStub(), header));
+        client.setBlockingStub(GrpcUtil.attachHeaders(client.getBlockingStub(), header));
         client.greet("A");
         client.shutdown();
 
@@ -56,6 +56,7 @@ public class ClientPrometheusInterceptorTest {
     @SneakyThrows
     @PerfTest(threads = 10, invocations = 100)
     public void prometheusClientByExportTest() {
+        //推荐使用此方法：RoutingPrometheusExport.getRoutingPrometheusMetrics()
         RoutingPrometheusMetrics routingPrometheusMetrics = RoutingPrometheusExport.getRoutingPrometheusMetrics();
         TracingLogClient client = new TracingLogClient("localhost", 50051, new ClientPrometheusInterceptor(routingPrometheusMetrics));
         Map<String, String> header = new HashMap<>();
@@ -65,7 +66,7 @@ public class ClientPrometheusInterceptorTest {
         client.shutdown();
     }
 
-    //@After
+    @After
     public void tearDown() throws Throwable {
         CollectorRegistry defaultRegistry = CollectorRegistry.defaultRegistry;
         //CollectorRegistry defaultRegistry = new CollectorRegistry();

@@ -9,15 +9,13 @@ import java.net.UnknownHostException;
  */
 public class NetUtils {
     static InetAddress addr;
+    static String localIP;
 
-    static
-    {
-        try
-        {
+    static {
+        try {
             addr = InetAddress.getLocalHost();
-        }
-        catch (UnknownHostException e)
-        {
+            localIP = addr.getHostAddress();
+        } catch (UnknownHostException e) {
             e.printStackTrace();
         }
     }
@@ -27,10 +25,8 @@ public class NetUtils {
      *
      * @return
      */
-    public static String getHostName()
-    {
-        if (null != addr)
-        {
+    public static String getHostName() {
+        if (null != addr) {
             return addr.getHostName();
         }
         return null;
@@ -41,12 +37,7 @@ public class NetUtils {
      *
      * @return
      */
-    public static String getLocalIp()
-    {
-        if (null != addr)
-        {
-            return addr.getHostAddress();
-        }
-        return null;
+    public static String getLocalIp() {
+        return localIP;
     }
 }
