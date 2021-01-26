@@ -2,6 +2,7 @@ package com.opentracinglog;
 
 import com.mattie.grpc.GreeterGrpc;
 import com.mattie.grpc.HelloWorldProtos;
+import io.grpc.ClientInterceptor;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.Getter;
@@ -20,21 +21,28 @@ public class TracingLogClient {
     @Setter
     private GreeterGrpc.GreeterBlockingStub blockingStub;
 
-    public TracingLogClient(String host, int port, ClientTracingLogInterceptor tracingLogInterceptor) {
+    public TracingLogClient(String host, int port, ClientInterceptor clientInterceptor) {
         channel = ManagedChannelBuilder.forAddress(host, port)
-                .intercept(tracingLogInterceptor)
+                .intercept(clientInterceptor)
                 .usePlaintext()
                 .build();
         blockingStub = GreeterGrpc.newBlockingStub(channel);
     }
 
-    void shutdown() {
+    public TracingLogClient(String host, int port) {
+        channel = ManagedChannelBuilder.forAddress(host, port)
+                .usePlaintext()
+                .build();
+        blockingStub = GreeterGrpc.newBlockingStub(channel);
+    }
+
+    public void shutdown() {
         channel.shutdown();
     }
 
 
     @SneakyThrows
-    boolean greet(String name) {
+    public boolean greet(String name) {
         HelloWorldProtos.HelloRequest request = HelloWorldProtos.HelloRequest.newBuilder().setMessage(name).build();
         HelloWorldProtos.HelloReply helloReply = blockingStub.sayHello(request);
         log.info("Client receive message [{}]", helloReply.getMessage());

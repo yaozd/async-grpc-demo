@@ -4,8 +4,10 @@ import com.mattie.grpc.GreeterGrpc;
 import com.mattie.grpc.HelloWorldProtos;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
-import io.grpc.Status;
+import io.grpc.ServerInterceptor;
 import io.grpc.stub.StreamObserver;
+import lombok.NonNull;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.nuhara.demos.TokenServerInterceptor;
 
@@ -32,7 +34,23 @@ public class TracingLogServer {
         });
     }
 
-    void blockUntilShutdown() throws InterruptedException {
+    @SneakyThrows
+    public void start(@NonNull ServerInterceptor serverInterceptor) {
+        server = ServerBuilder.forPort(port)
+                .intercept(serverInterceptor)//增加token
+                .addService(new GreeterImpl())
+                .build()
+                .start();
+        log.info("Start server port[{}]", port);
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                TracingLogServer.this.stop();
+            }
+        });
+    }
+
+    public void blockUntilShutdown() throws InterruptedException {
         if (server != null) {
             server.awaitTermination();
         }

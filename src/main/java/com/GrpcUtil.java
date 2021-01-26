@@ -1,6 +1,7 @@
 package com;
 
 import io.grpc.Metadata;
+import io.grpc.MethodDescriptor;
 import io.grpc.stub.AbstractStub;
 import io.grpc.stub.MetadataUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -42,6 +43,7 @@ public class GrpcUtil {
 
     /**
      * 获取grpc服务名
+     *
      * @param path
      * @return
      */
@@ -51,5 +53,15 @@ public class GrpcUtil {
             return HYPHEN;
         }
         return service;
+    }
+
+    /**
+     * 暂时不推荐使用此方法，这个方法会抛出异常
+     *
+     * @param fullMethodName
+     * @return
+     */
+    public static String extractFullServiceName(String fullMethodName) {
+        return MethodDescriptor.extractFullServiceName(fullMethodName);
     }
 }
