@@ -1,6 +1,8 @@
 package com.prometheusdemo;
 
 /**
+ * 创建一个单例模式
+ *
  * @Author: yaozh
  * @Description:
  */
