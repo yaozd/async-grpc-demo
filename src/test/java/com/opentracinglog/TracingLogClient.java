@@ -10,6 +10,8 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * @Author: yaozh
  * @Description:
@@ -44,6 +46,8 @@ public class TracingLogClient {
     @SneakyThrows
     public boolean greet(String name) {
         HelloWorldProtos.HelloRequest request = HelloWorldProtos.HelloRequest.newBuilder().setMessage(name).build();
+        //模拟操作：客户端设置超时，超时后会触发服务器端的Cancel操作
+        //HelloWorldProtos.HelloReply helloReply = blockingStub.withDeadlineAfter(5, TimeUnit.SECONDS).sayHello(request);
         HelloWorldProtos.HelloReply helloReply = blockingStub.sayHello(request);
         log.info("Client receive message [{}]", helloReply.getMessage());
         return true;

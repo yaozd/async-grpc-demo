@@ -1,5 +1,6 @@
 package com.opentracinglog;
 
+import cn.hutool.core.thread.ThreadUtil;
 import com.mattie.grpc.GreeterGrpc;
 import com.mattie.grpc.HelloWorldProtos;
 import io.grpc.Server;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.nuhara.demos.TokenServerInterceptor;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class TracingLogServer {
@@ -74,6 +76,8 @@ public class TracingLogServer {
             //
             //返回一个包装成Exception的Status来返回错误信息，如果直接使用Throwable，客户端无法获得错误信息
             //responseObserver.onError(Status.INTERNAL.withDescription("error desc").asRuntimeException());
+            //模拟操作：客户端设置超时，超时后会触发服务器端的Cancel操作
+            //ThreadUtil.sleep(10, TimeUnit.SECONDS);
             //
             responseObserver.onNext(reply);
             responseObserver.onCompleted();

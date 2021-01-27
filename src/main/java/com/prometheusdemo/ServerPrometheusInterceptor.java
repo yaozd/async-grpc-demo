@@ -95,15 +95,19 @@ public class ServerPrometheusInterceptor implements ServerInterceptor {
             }
         }
 
+        /**
+         * 例如：客户端设置超时，超时后会触发服务器端的Cancel操作
+         */
         @Override
         public void onCancel() {
             log.info("Call cancelled");
-            //TODO 暂时不确定是否要在这里也加入调用，目前还不清楚什么触发此条伯
             routingPrometheusMetrics.incrementRequestCounter(routingLog.getGrpcService(),
                     String.valueOf(routingLog.getInnerResponseCode()),
                     String.valueOf(routingLog.getTargetResponseCode()));
             routingPrometheusMetrics.changeRequestLatencyHistogram(routingLog.getGrpcService(),
                     ROLE_CLIENT, routingLog.getTotalCost());
+            //给这条记录打上标签
+            routingLog.setInterruptMessage(routingLog.getInterruptMessage() + "[CALL_CANCELLED]");
             routingLog.finish();
             delegate().onCancel();
         }

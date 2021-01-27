@@ -20,12 +20,12 @@ public class ClientTracingLogInterceptorTest {
 
     @Test
     @SneakyThrows
-    @PerfTest(threads = 10, invocations = 100)
+    //@PerfTest(threads = 10, invocations = 100)
     public void tracedLogClientTest() {
         TracingLogClient client = new TracingLogClient("localhost", 50051, new ClientTracingLogInterceptor());
         Map<String, String> header = new HashMap<>();
         header.put("token", "xxx-xxx-xxxx");
-        //client.setBlockingStub(GrpcUtil.attachHeaders(client.getBlockingStub(), header));
+        client.setBlockingStub(GrpcUtil.attachHeaders(client.getBlockingStub(), header));
         client.greet("A");
         client.shutdown();
     }
