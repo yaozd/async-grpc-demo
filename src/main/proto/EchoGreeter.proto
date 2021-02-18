@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package com.echo.grpc;
+
+option java_package = "com.echo.grpc";
+option java_outer_classname = "EchoGreeterProto";
+
+service EchoGreeter {
+    rpc SayHello (EchoRequest) returns (EchoReply) {
+    }
+
+    rpc biStream (stream EchoStreamRequest) returns (stream EchoStreamResponse) {
+    };
+}
+
+message EchoRequest {
+    string message = 1;
+    int64 size = 2;
+}
+
+message EchoReply {
+    string message = 1;
+    int64 at_time = 2;
+}
+
+message EchoStreamRequest {
+    string request_info = 1;
+}
+
+message EchoStreamResponse {
+    string response_info = 1;
+}

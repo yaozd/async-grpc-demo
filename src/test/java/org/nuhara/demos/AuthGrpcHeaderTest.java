@@ -6,6 +6,7 @@ import com.mattie.grpc.HelloWorldProtos;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.databene.contiperf.PerfTest;
 import org.databene.contiperf.junit.ContiPerfRule;
 import org.junit.Before;
 import org.junit.Rule;
@@ -13,6 +14,8 @@ import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Author: yaozh
@@ -25,6 +28,7 @@ public class AuthGrpcHeaderTest {
 
     private ManagedChannel channel;
     private ManagedChannelBuilder<?> channelBuilder;
+    private AtomicInteger num=new AtomicInteger(0);
 
     @Before
     public void init() {
@@ -53,7 +57,15 @@ public class AuthGrpcHeaderTest {
         Map<String, String> header = new HashMap<>();
 
         //header.put("serviceaccesstoken","xx");
+        header.put("serviceaccesstoken", "dbde03c7-de30-4612-bdd5-b85cfe183573");
+        header.put("groupid", "11157");
+        header.put("shopid", "76072216");
+        header.put("traceid", "fcfbbec0-9a9c-4940-a744-c0569224731f");
+        header.put("X-b3-sampled", "1");
+        header.put("x-b3-traceid", "b3774af5b68decdc");
+        header.put("x-b3-spanid", "a03615e6ad01667b");
 
+        blockingStub = GrpcUtil.attachHeaders(blockingStub, header);
         blockingStub = GrpcUtil.attachHeaders(blockingStub, header);
         try {
             HelloWorldProtos.HelloReply helloReply = blockingStub.
@@ -65,5 +77,35 @@ public class AuthGrpcHeaderTest {
         } catch (Exception e) {
             log.error("exception", e);
         }
+    }
+    @Test
+    @PerfTest(threads = 100, invocations = 100000)
+    //@PerfTest(threads = 100, invocations = 100000)
+    public void mutilCallTest() throws InterruptedException {
+        ManagedChannel channel = channelBuilder.build();
+        GreeterGrpc.GreeterBlockingStub blockingStub = GreeterGrpc.newBlockingStub(channel);
+        Map<String, String> header = new HashMap<>();
+
+        //header.put("serviceaccesstoken","xx");
+        header.put("serviceaccesstoken", "dbde03c7-de30-4612-bdd5-b85cfe183573"+num.incrementAndGet());
+        header.put("groupid", "11157");
+        header.put("shopid", "76072216");
+        header.put("traceid", "fcfbbec0-9a9c-4940-a744-c0569224731f");
+        header.put("version", "20201030(ca83d63d-beta)");
+        blockingStub = GrpcUtil.attachHeaders(blockingStub, header);
+        blockingStub = GrpcUtil.attachHeaders(blockingStub, header);
+        for (int j = 0; j < 100; j++) {
+            try {
+                HelloWorldProtos.HelloReply helloReply = blockingStub.withDeadlineAfter(50, TimeUnit.MILLISECONDS).
+                        sayHello(HelloWorldProtos.HelloRequest.newBuilder().setMessage("hello wolrd").build());
+                log.info(helloReply.getMessage());
+
+                log.info("done!");
+                //Thread.currentThread().join();
+            } catch (Exception e) {
+                log.error("exception", e);
+            }
+        }
+
     }
 }
