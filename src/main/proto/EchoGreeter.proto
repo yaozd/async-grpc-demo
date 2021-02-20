@@ -16,6 +16,7 @@ service EchoGreeter {
 message EchoRequest {
     string message = 1;
     int64 size = 2;
+    int64 sleep_mills = 3;
 }
 
 message EchoReply {

@@ -89,6 +89,8 @@ public class ServerTracingLogInterceptor implements ServerInterceptor {
         @Override
         public void onCancel() {
             log.info("Call cancelled");
+            //给这条记录打上标签
+            routingLog.setInterruptMessage(routingLog.getInterruptMessage() + "[CALL_CANCELLED]");
             routingLog.finish();
             delegate().onCancel();
         }

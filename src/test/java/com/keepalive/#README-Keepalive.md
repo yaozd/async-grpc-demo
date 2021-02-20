@@ -1,5 +1,47 @@
 ## grpc keepalive
 
+## 总结：grpc与时间有关的配置
+> PS:{@link com.keepalive.ClientPingFrameTest}
+- 后端服务
+    - .permitKeepAliveTime(10, TimeUnit.SECONDS)//后端规定的速率,在规定的速率内可以发送2次ping，如果设置为10秒则不会出现触发too_many_pings 
+        ```
+      ps:虽然permitKeepAliveTime(10, TimeUnit.SECONDS)可以避免触发too_many_pings问题，但是它也隐藏了用户一些不合理的设置，占用过多服务器资源与带宽。
+      （但目前个人认为此理由在大多数场景下，都比较牵强，暂不推荐byArvin）
+      个人建议可以把后端服务设置为permitKeepAliveTime(10, TimeUnit.SECONDS)
+      ```
+- 客户端
+    - .keepAliveTime(10, TimeUnit.SECONDS) //此时使用用户自定义时间10秒（PS:默认值也是10秒）（channel连接级别，此级别主要是判断连接是否处于假死状态）
+        - .keepAliveWithoutCalls(true)
+        - .keepAliveTime(10, TimeUnit.SECONDS) //此时使用用户自定义时间10秒（PS:默认值也是10秒）
+        - .keepAliveTimeout(10, TimeUnit.NANOSECONDS)
+    - futureStub.sayHello(echoRequest).get(5, TimeUnit.SECONDS);// 5秒超时 （方法级别）
+    - EchoGreeterGrpc.newFutureStub(channel).withDeadlineAfter(20, TimeUnit.SECONDS);// 20秒超时 （stub级别|通道级别）
+- 错误异常信息
+    - UNAVAILABLE: Keepalive failed. The connection is likely gone （PS:后端服务无法响应客户端的ping请求时）
+    - RESOURCE_EXHAUSTED: Bandwidth exhausted （PS:触发too_many_pings，3次ping请求）
+    - TimeoutException: Waited 40 seconds for io.grpc.stub.ClientCalls（PS:触发futureStub.sayHello(echoRequest).get(5, TimeUnit.SECONDS)）
+    - DEADLINE_EXCEEDED: deadline exceeded after 19890781200ns（PS:触发EchoGreeterGrpc.newFutureStub(channel).withDeadlineAfter(20, TimeUnit.SECONDS)）
+- 合理的时间配置参考方案
+    ```
+    方法级别 < stub级别|通道级别 < channel连接级别 <
+    示例：（1分钟超时）
+    客户端设置：
+    方法级别 （超时时间：60秒） < stub级别|通道级别 （超时时间：70秒）< channel连接级别（超时时间：90秒）
+    后端服务设置：
+    permitKeepAliveTime(10, TimeUnit.SECONDS)（PS:避免触发too_many_pings问题）
+    说明：
+    此配置可以真实的反应后端服务的处理情况，同时间也减少了PING请求次数，节约后端服务资源
+    ```
+
+## 核心类
+- io.grpc.internal.KeepAliveManager
+```
+1.
+sendPing
+2.
+shutdown
+```
+
 ## 解决too_many_pings:Sent GOAWAY 
 - server 
 ```
@@ -150,7 +192,17 @@ private ManagedChannel channel;
 
 - 总结
 ```
-触发Keepalive failed. The connection is likely gone的根本原因是因为：
-服务端处理能力不足，所有线程都被占用，无法响应客户端发来过来的ping请求。触发pingTimeout方法。
+触发Keepalive failed. The connection is likely gone的根本原因是因为：后端服务无法响应客户端的ping请求
+PS:
+后端服务无法响应客户端的ping请求有两种情况：
+1.
+客户端与后端服务之间的网络不通过。连接超时时间过长造成。
+方法检测的PING操作产生的UNAVAILABLE:Keepalive failed. The connection is likely gone异常，在UNAVAILABLE:io exception|UNAVAILABLE:connection timeout之间触发。
+可以通过配置：
+NettyChannelBuilder
+ .forTarget(target)
+ .withOption(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10) //设置连接超时时间
+2.
+服务端处理能力不足，发生阻塞,所有线程都被占用，无法响应客户端发来过来的ping请求。触发pingTimeout方法。
 ping超时后会报Keepalive failed. The connection is likely gone
 ```
