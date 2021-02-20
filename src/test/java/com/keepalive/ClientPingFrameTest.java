@@ -1,5 +1,6 @@
 package com.keepalive;
 
+import cn.hutool.core.thread.ThreadUtil;
 import com.echo.grpc.EchoGreeterGrpc;
 import com.echo.grpc.EchoGreeterProto;
 import io.grpc.ManagedChannel;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
 import org.junit.Test;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -406,6 +408,68 @@ public class ClientPingFrameTest extends AbstractKeepaliveTest {
         } catch (Exception ex) {
             log.error("", ex);
         }
+    }
+
+    /**
+     * 前提：
+     * 后端服务启动
+     * {@link com.keepalive.ServerKeepaliveTest#keepaliveWithExecutorTest()}
+     * 并发模式下，观察ping的请求次数
+     */
+    @Test
+    public void keepaliveConcurrentModeTest() {
+        ManagedChannel channel = NettyChannelBuilder
+                .forTarget(target)
+                /**
+                 * 代表：空闲模式也要触发ping请求
+                 * 设置当连接上没有未完成的RPC时是否执行keepalive。
+                 * *默认为{@code false}。
+                 */
+                .keepAliveWithoutCalls(true)
+                /**
+                 * 如果不设置：keepAliveTime，则默认为禁用客户端保持连接
+                 * 相当于客户端不会发送PIING请求
+                 */
+                /**
+                 * 空闲模式与非空闲模式（有请求正在处理）：触发
+                 * 如果长时间没有收到读时，则发送ping来判断当前连接是否存活。
+                 * 默认为20秒，最小为10秒
+                 * 如果keepAliveTimeout(1, TimeUnit.SECONDS)则设置为最小值10秒，
+                 * 如果客户端频发发送ping请求，则出发too_many_pings
+                 */
+                .keepAliveTime(10, TimeUnit.SECONDS) //此时使用用户自定义时间10秒
+                /**
+                 * keepAliveTimeout设置决定触发pingTimeout方法（PS:UNAVAILABLE:Keepalive failed. The connection is likely gone）的速度
+                 * 默认为：10秒,最小值为10毫秒
+                 */
+                //.keepAliveTimeout(1, TimeUnit.NANOSECONDS)
+                .keepAliveTimeout(10, TimeUnit.NANOSECONDS)
+                //.keepAliveTimeout(10, TimeUnit.SECONDS)
+                .usePlaintext()
+                .build();
+        //
+        EchoGreeterGrpc.EchoGreeterFutureStub futureStub = EchoGreeterGrpc.newFutureStub(channel).withDeadlineAfter(60, TimeUnit.SECONDS);
+        EchoGreeterProto.EchoRequest echoRequest = EchoGreeterProto.EchoRequest.newBuilder()
+                .setSleepMills(TimeUnit.SECONDS.toMillis(60))
+                .setSize(10)
+                .build();
+        int nThreads=50;
+        ExecutorService executorService = ThreadUtil.newExecutor(nThreads);
+        for (int i = 0; i < nThreads; i++) {
+            executorService.execute(()->{
+                try {
+                    //监听模式
+                    //ListenableFuture<EchoGreeterProto.EchoReply> echoReplyListenableFuture = futureStub.sayHello(echoRequest);
+                    //阻塞模式与newBlockingStub相同，不同之处在于：可以自定义每一个方法的timeout时间而已
+                    //EchoGreeterProto.EchoReply echoReply = futureStub.sayHello(echoRequest).get(); //默认使用futureStub统一时间 ：20秒
+                    EchoGreeterProto.EchoReply echoReply = futureStub.sayHello(echoRequest).get(40, TimeUnit.SECONDS);//使用用户自定时间： 40秒
+                    log.info("At time:[{}],message:[{}].", echoReply.getAtTime(), echoReply.getMessage());
+                } catch (Exception ex) {
+                    log.error("", ex);
+                }
+            });
+        }
+
     }
 
 }

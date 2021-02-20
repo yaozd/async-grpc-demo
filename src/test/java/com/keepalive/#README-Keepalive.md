@@ -1,5 +1,7 @@
 ## grpc keepalive
 
+> keepalive 主要触发ping操作是为判断当前连接是否处于假死状态，因此不要滥用。
+
 ## 总结：grpc与时间有关的配置
 > PS:{@link com.keepalive.ClientPingFrameTest}
 - 后端服务
@@ -26,11 +28,12 @@
     方法级别 < stub级别|通道级别 < channel连接级别 <
     示例：（1分钟超时）
     客户端设置：
-    方法级别 （超时时间：60秒） < stub级别|通道级别 （超时时间：70秒）< channel连接级别（超时时间：90秒）
+    方法级别 （futureStub.sayHello(echoRequest).get超时时间：60秒） < stub级别|通道级别 （newFutureStub(channel).withDeadlineAfter超时时间：70秒）< channel连接级别（NettyChannelBuilder.keepAliveTime超时时间：90秒）
     后端服务设置：
     permitKeepAliveTime(10, TimeUnit.SECONDS)（PS:避免触发too_many_pings问题）
     说明：
     此配置可以真实的反应后端服务的处理情况，同时间也减少了PING请求次数，节约后端服务资源
+    但是在极端情况下，如果后端服务无法响应ping请求时，一样会触发UNAVAILABLE: Keepalive failed. The connection is likely gone
     ```
 
 ## 核心类
