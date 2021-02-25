@@ -8,6 +8,22 @@
       grpc 客户端报错 rpc error: code = Unavailable desc = transport is closing，
      原因是连接长时间没有使用，被服务端断开，这种情况通过简单粗暴的重试策略可以解决，更加优雅的解决方案是增加保持连接策略
      ```
+## 如果Keepalive配置不合理，会有哪些影响
+   - keepalive配置时间过小，在后端服务非阻塞情况下，会触发too_many_pings问题
+        ```
+     too_many_pings问题
+     RESOURCE_EXHAUSTED: Bandwidth exhausted
+     客户端发送的ping存在太多不符合规则的，则服务器发送ENHANCE_YOUR_CALM的GOAWAY帧
+     ```
+   - keepalive配置时间过小，在后端服务阻塞情况下
+        ```
+     解决keepalive时间配置不合理，造成UNAVAILABLE: Keepalive failed. The connection is likely gone异常提前触发，
+     覆盖程序实际错误异常，如：
+     1.TimeoutException: Waited 40 seconds for io.grpc.stub.ClientCalls
+     2.DEADLINE_EXCEEDED: deadline exceeded after 19890781200ns
+     3.UNAVAILABLE:io exception
+     ```
+
 ## keepalive 相关默认值
    - [grpc keepalive使用指南](https://blog.csdn.net/zhaominpro/article/details/103127023)
    
