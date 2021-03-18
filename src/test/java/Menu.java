@@ -22,5 +22,15 @@ public enum Menu {
      * GRPC keepalive
      * {@link com.keepalive}
      */
-    KEEPALIVE_TEST
+    KEEPALIVE_TEST,
+    /**
+     * 模拟耗时请求，触发网关timeout
+     * 1.
+     * client
+     * {@link com.longtime.TimeoutClient}
+     * 2.
+     * server
+     * {@link com.longtime.TimeoutServer}
+     */
+    TIMEOUT_TEST
 }
