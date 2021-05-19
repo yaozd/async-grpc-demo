@@ -1,6 +1,7 @@
 package com.examples;
 
 import cn.hutool.core.thread.ThreadUtil;
+import com.ExceptionUtil;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Status;
@@ -14,9 +15,10 @@ import java.util.concurrent.TimeUnit;
 /**
  * GRPC的四种服务类型
  * https://www.cnblogs.com/resentment/p/6792029.html
- *
+ * <p>
  * GRPC错误处理
  * https://www.cnblogs.com/resentment/p/6883153.html
+ *
  * @Author: yaozh
  * @Description:
  */
@@ -123,11 +125,14 @@ public class FooClientTest {
         StreamObserver<FooProto.FooResponse> responseObserver = new StreamObserver<FooProto.FooResponse>() {
             @Override
             public void onNext(FooProto.FooResponse result) {
+                //人为模拟异常
+                //ExceptionUtil.mockException();
                 log.info("bidirectional stream--" + result.getCode());
             }
 
             @Override
             public void onError(Throwable t) {
+                log.error("ERROR!", t);
             }
 
             @Override
@@ -141,7 +146,7 @@ public class FooClientTest {
         clientStreamObserver.onNext(FooProto.FooRequest.newBuilder().setCode("hello-2").build());
         clientStreamObserver.onCompleted();
         //由于是异步获得结果，所以sleep一秒
-        ThreadUtil.sleep(3, TimeUnit.SECONDS);
+        ThreadUtil.sleep(5, TimeUnit.SECONDS);
         //channel.shutdown();
     }
 }
