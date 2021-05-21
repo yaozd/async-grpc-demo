@@ -83,9 +83,10 @@ public class FooMockErrorService extends FooGrpc.FooImplBase {
                 //responseObserver.onNext(FooProto.FooResponse.newBuilder().setCode("1").build());
                 builder.setCode("SERVER:" + builder.getCode());
                 //返回异常
-                responseObserver.onError(Status.INTERNAL.withDescription("error desc").asRuntimeException());
+                //responseObserver.onError(Status.INTERNAL.withDescription("error desc").asRuntimeException());
                 //responseObserver.onNext(builder.build());
                 //responseObserver.onCompleted();
+                responseObserver.onError(Status.CANCELLED.asRuntimeException());
             }
         };
     }
