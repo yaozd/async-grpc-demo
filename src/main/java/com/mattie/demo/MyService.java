@@ -1,6 +1,8 @@
 package com.mattie.demo;
 
 import com.mattie.grpc.GreeterGrpc.GreeterImplBase;
+import io.grpc.Context;
+import io.grpc.Contexts;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,6 +44,8 @@ public class MyService extends GreeterImplBase {
         if(log.isInfoEnabled()){
             log.info("client sayHello:" + request.getMessage());
         }
+
+        //responseObserver.onError(new IllegalArgumentException("模拟异常！！"));
         HelloReply helloReply = HelloReply.newBuilder().setMessage(request.getMessage()).build();
         responseObserver.onNext(helloReply);
         responseObserver.onCompleted();
