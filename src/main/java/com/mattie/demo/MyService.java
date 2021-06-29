@@ -1,5 +1,6 @@
 package com.mattie.demo;
 
+import com.DataUtil;
 import com.mattie.grpc.GreeterGrpc.GreeterImplBase;
 import io.grpc.Context;
 import io.grpc.Contexts;
@@ -46,7 +47,11 @@ public class MyService extends GreeterImplBase {
         }
 
         //responseObserver.onError(new IllegalArgumentException("模拟异常！！"));
-        HelloReply helloReply = HelloReply.newBuilder().setMessage(request.getMessage()).build();
+        //复现java.nio.channels.ClosedChannelException: nul异常
+        //模拟大柱子异常:java.nio.channels.ClosedChannelException: null
+        HelloReply helloReply = HelloReply.newBuilder().setMessage(request.getMessage()+ DataUtil.getMockData(50000)).build();
+        //正常响应
+        //HelloReply helloReply = HelloReply.newBuilder().setMessage(request.getMessage()).build();
         responseObserver.onNext(helloReply);
         responseObserver.onCompleted();
     }

@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @Description:
  */
 @Slf4j
-public class GrpcClientSimpleTest {
+public class GrpcClientSimpleTestForClosedChannelException {
     @Rule
     public ContiPerfRule i = new ContiPerfRule();
 
@@ -57,15 +57,19 @@ public class GrpcClientSimpleTest {
     public void end() {
         log.info("[END]Call end().测试完，正常关闭当前连接,成功完成请求数：[{}]",SUCCESS_NUM.get());
         channel.shutdownNow();
-        Thread.currentThread().join(2000);
+        Thread.currentThread().join(20000);
     }
 
     AtomicInteger I=new AtomicInteger(0);
     AtomicInteger SUCCESS_NUM=new AtomicInteger(0);
+
+    /**
+     * 模拟大柱子异常:java.nio.channels.ClosedChannelException: null
+     * ClosedChannelException:null
+     * @throws InterruptedException
+     */
     @Test
-    @PerfTest(threads = 10, invocations = 1000)
-    //@PerfTest(threads = 100, invocations = 1000000)
-    //@PerfTest(threads = 500, invocations = 20040)
+    @PerfTest(threads = 500, invocations = 20040)
     public void oneCallTest() throws InterruptedException {
         if (I.incrementAndGet()>10000) {
 
@@ -77,14 +81,9 @@ public class GrpcClientSimpleTest {
         GreeterGrpc.GreeterBlockingStub blockingStub = GreeterGrpc.newBlockingStub(channel);
         Map<String, String> header = new HashMap<>();
 
-        //header.put("serviceaccesstoken","xx");
         header.put("serviceaccesstoken", "dbde03c7-de30-4612-bdd5-b85cfe183573");
         header.put("groupid", "11157");
         header.put("shopid", "76072216");
-        //header.put("traceid", "fcfbbec0-9a9c-4940-a744-c0569224731f");
-        //header.put("X-b3-sampled", "1");
-        //header.put("x-b3-traceid", "b3774af5b68decdc");
-        //header.put("x-b3-spanid", "a03615e6ad01667b");
 
         blockingStub = GrpcUtil.attachHeaders(blockingStub, header);
         blockingStub = GrpcUtil.attachHeaders(blockingStub, header);
